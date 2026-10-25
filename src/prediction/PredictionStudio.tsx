@@ -1182,7 +1182,7 @@ export default function PredictionStudio() {
                 <div>
                   <h3>Rebuild it in Python.</h3>
                   <p>
-                    Three executed notebooks, transparent algorithms,
+                    Four executed notebooks, transparent algorithms,
                     scikit-learn pipelines, data dictionaries, tests, and answer
                     keys. Python runs on your computer, not on GitHub Pages.
                   </p>

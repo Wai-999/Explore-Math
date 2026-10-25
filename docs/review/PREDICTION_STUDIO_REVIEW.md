@@ -2,6 +2,8 @@
 
 Status: implemented review candidate on `feature/prediction-studio`. This package does **not** record a completed human review. Existing public v0.1 remains the production release until the gate in the user’s predictive-modeling master prompt, section 7, is satisfied: “Honor the prior usability gate before releasing additional mission families.”
 
+Review the source and CI in [draft PR #1](https://github.com/Wai-999/Explore-Math/pull/1).
+
 ## Open the candidate
 
 ```sh

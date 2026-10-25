@@ -20,7 +20,7 @@ Application source: `cdafe822caf381ec46c7bd21e710e364036ee68a`, version `0.2.0-r
 
 The public-data notebook excludes future realized weather and target-component counts. It demonstrates an evaluation workflow on historical observed rentals; it does not establish operational usefulness. Synthetic projects, descriptive residual bands, small subgroup samples, and free-text assessment limitations remain explicit beside the lessons.
 
-Candidate screenshots are in `docs/screenshots/prediction/`. GitHub CI evidence is recorded separately after the run completes; local results above must not be read as a claim that the new candidate is live.
+Candidate screenshots are in `docs/screenshots/prediction/`. [Linux CI for the implementation commit](https://github.com/Wai-999/Explore-Math/actions/runs/40215489852) passed both jobs: 61 unit tests; 43 browser passes and two explicit Firefox WebGL-only skips; 10 Python tests; and all four notebooks. The skipped 3D checks passed locally on all three engines. The later energy-chart label correction was followed by another complete local notebook execution. Local and CI results must not be read as a claim that the new candidate is live.
 
 ## Historical v0.1 evidence
 
