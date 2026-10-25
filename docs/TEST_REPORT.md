@@ -1,5 +1,29 @@
 # Test report
 
+## Prediction Studio candidate — October 25, 2026
+
+Application source: `cdafe822caf381ec46c7bd21e710e364036ee68a`, version `0.2.0-rc.1`, branch `feature/prediction-studio`. This candidate has not been merged or deployed to the public Pages site. Human review remains NOT RUN; see [the concrete review package](review/PREDICTION_STUDIO_REVIEW.md).
+
+| Check                                                                                    | Result  | Executed evidence and limits                                                                                                                                                                                              |
+| ---------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| TypeScript, ESLint, Prettier, production build                                           | PASS    | Strict checks passed. Existing lazy ThreeStage chunk still produces the documented size advisory.                                                                                                                         |
+| `npm test`                                                                               | PASS    | 61 tests, including analytic gradients against finite differences, fitting, grouped/temporal partitions, leakage/freeze guards, tied/undefined metrics, storage migration, and three executed Python fixture comparisons. |
+| Full local Playwright suite                                                              | PASS    | 45/45 on Chromium, Firefox, and WebKit; all three projects plus preserved mathematical worlds.                                                                                                                            |
+| Final prediction journeys on Firefox and WebKit                                          | PASS    | 10/10 after the final interface and downloadable-ZIP checks.                                                                                                                                                              |
+| Built-assets Chromium suite                                                              | PASS    | 15/15 using `TEST_BASE_URL=http://127.0.0.1:4174/Explore-Math/`, including lazy loading under the repository subpath.                                                                                                     |
+| Accessibility automation                                                                 | PASS    | All eight studio stages in both themes; native keyboard/numeric inputs, frozen controls, mobile 390 px layout, and no serious/critical axe violations. Human assistive-technology testing remains NOT RUN.                |
+| Python companion tests                                                                   | PASS    | 10 unit tests, including training-only imputation, equivalent regularization conventions, calibration/policy separation, frozen evaluation, and rolling backtests.                                                        |
+| Notebook execution                                                                       | PASS    | Four notebooks executed top to bottom using the pinned Python 3.12 environment: energy, maintenance, demand, and licensed UCI historical bike data. Saved outputs contain 12 figures; HTML previews are CI artifacts.     |
+| Download packaging                                                                       | PASS    | Self-contained ZIP passes CRC verification and includes all four notebooks, source, tests, environment files, data/provenance, templates, separate worked answers, and license. Browser journey checks the ZIP signature. |
+| Persistence and compatibility                                                            | PASS    | Original v1 key retained; validated v2 migration, backup/restore, fitted-session reload, one-time final-test state, and archived experiment history.                                                                      |
+| Human math, novice transfer, retention, screen reader, physical mobile, low-end hardware | NOT RUN | Review protocols and remaining mathematics backlog are visible; automation does not establish educational effectiveness or authorize release.                                                                             |
+
+The public-data notebook excludes future realized weather and target-component counts. It demonstrates an evaluation workflow on historical observed rentals; it does not establish operational usefulness. Synthetic projects, descriptive residual bands, small subgroup samples, and free-text assessment limitations remain explicit beside the lessons.
+
+Candidate screenshots are in `docs/screenshots/prediction/`. GitHub CI evidence is recorded separately after the run completes; local results above must not be read as a claim that the new candidate is live.
+
+## Historical v0.1 evidence
+
 Date: October 25, 2026 (America/Los_Angeles). Application source: `18da920fd5c4a4701bc313cb1394323a981b5aeb` on main. Results below are executed evidence, not independent educational validation.
 
 ## Executed commands
