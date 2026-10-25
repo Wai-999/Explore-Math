@@ -96,6 +96,19 @@ describe("right-handed column-vector linear algebra", () => {
     ])
       expect(validMatrix(v)).toBe(false);
   });
+  it("tiny basis vectors return a degenerate state rather than throwing", () => {
+    expect(() =>
+      linearModel([1e-7, 0, 0, 0, 1e-7, 0, 0, 0, 1e-7]),
+    ).not.toThrow();
+    expect(gramSchmidt([1e-7, 0, 0], [0, 1e-7, 0])).toBeNull();
+  });
+  it("small uniform scales remain invertible and preserve numerical rank", () => {
+    const m: Mat3 = [0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001];
+    expect(inverse(m)).not.toBeNull();
+    expect(rank(m)).toBe(3);
+    expect(linearModel(m).orientation).toBe("Preserved");
+    closeVec(transform(inverse(m)!, transform(m, [1, 2, 3])), [1, 2, 3]);
+  });
   it("declines near singular inverses without fabricating a solution", () => {
     const m: Mat3 = [1, 0, 0, 0, 1, 0, 0, 0, 1e-10];
     expect(inverse(m)).toBeNull();

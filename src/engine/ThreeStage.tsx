@@ -1,10 +1,33 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Canvas, type ThreeEvent } from "@react-three/fiber";
 import { OrbitControls, Line } from "@react-three/drei";
 import * as THREE from "three";
 import type { SceneProps } from "./GeometryView";
 import { type Mat3, type Vec3 } from "../math/linear";
 import { energy, gradient, tangentHeight } from "../math/calculus";
+function AxisLabel({ text, position }: { text: string; position: Vec3 }) {
+  const texture = useMemo(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 64;
+    canvas.height = 64;
+    const ctx = canvas.getContext("2d")!;
+    ctx.font = "36px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.strokeStyle = "#152523";
+    ctx.lineWidth = 4;
+    ctx.strokeText(text, 32, 32);
+    ctx.fillStyle = "#d1ddd3";
+    ctx.fillText(text, 32, 32);
+    return new THREE.CanvasTexture(canvas);
+  }, [text]);
+  useEffect(() => () => texture.dispose(), [texture]);
+  return (
+    <sprite position={position} scale={[0.36, 0.36, 1]}>
+      <spriteMaterial map={texture} depthTest={false} />
+    </sprite>
+  );
+}
 function Arrow({
   to,
   color,
@@ -223,6 +246,8 @@ function Surface({
     g.computeVertexNormals();
     return g;
   }, [surface, point]);
+  useEffect(() => () => geometry.dispose(), [geometry]);
+  useEffect(() => () => tangent.dispose(), [tangent]);
   const g = gradient(surface, point);
   return (
     <>
@@ -325,6 +350,9 @@ export default function ThreeStage({
         />
       )}
       {scene.kind === "calculus" && <Surface {...scene} />}
+      <AxisLabel text="x" position={[3.15, 0, 0]} />
+      <AxisLabel text="y" position={[0, 3.15, 0]} />
+      <AxisLabel text="z" position={[0, 0, 3.15]} />
       <OrbitControls
         makeDefault
         enabled={!dragging}

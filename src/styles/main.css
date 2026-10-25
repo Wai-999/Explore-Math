@@ -2217,3 +2217,12 @@ select {
 :root[data-theme="light"] .basis-key > span:nth-child(3) {
   color: #72508f;
 }
+
+.axis-label {
+  font:
+    12px DM Sans,
+    system-ui,
+    sans-serif;
+  color: var(--muted);
+  pointer-events: none;
+}

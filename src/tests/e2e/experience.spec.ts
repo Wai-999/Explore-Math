@@ -87,9 +87,8 @@ test("3D geometry changes, orbit/home, and lost context preserve the model", asy
 }) => {
   await page.goto("#/explore/linear");
   const canvas = page.locator("canvas");
-  if (
-    await page.getByText("WebGL2 is unavailable.", { exact: false }).isVisible()
-  ) {
+  await expect(canvas.or(page.locator(".fallback-notice"))).toBeVisible();
+  if (await page.locator(".fallback-notice").isVisible()) {
     test.skip(
       true,
       "Browser does not provide WebGL2; fallback tested separately.",

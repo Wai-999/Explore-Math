@@ -43,7 +43,13 @@ export function determinant(m: Mat3) {
 }
 export function inverse(m: Mat3): Mat3 | null {
   const det = determinant(m);
-  if (!Number.isFinite(det) || Math.abs(det) < 1e-8) return null;
+  const magnitude = Math.max(...m.map(Math.abs));
+  if (
+    !Number.isFinite(det) ||
+    magnitude === 0 ||
+    Math.abs(det) < 1e-8 * magnitude ** 3
+  )
+    return null;
   const [a, b, c, d, e, f, g, h, i] = m;
   return [
     e * i - f * h,
@@ -72,7 +78,7 @@ export function rank(m: Mat3) {
     let pivot = r;
     for (let j = r + 1; j < 3; j++)
       if (Math.abs(a[j][c]) > Math.abs(a[pivot][c])) pivot = j;
-    if (Math.abs(a[pivot][c]) < 1e-8) continue;
+    if (Math.abs(a[pivot][c]) <= 1e-8 * Math.max(...m.map(Math.abs))) continue;
     [a[r], a[pivot]] = [a[pivot], a[r]];
     for (let j = r + 1; j < 3; j++) {
       const f = a[j][c] / a[r][c];
@@ -89,7 +95,8 @@ export function projection(a: Vec3, onto: Vec3): Vec3 | null {
 }
 export function gramSchmidt(a: Vec3, b: Vec3): [Vec3, Vec3] | null {
   if (norm(a) < 1e-8) return null;
-  const p = projection(b, a)!;
+  const p = projection(b, a);
+  if (!p) return null;
   const residual = add(b, scale(p, -1));
   if (norm(residual) < 1e-8) return null;
   return [scale(a, 1 / norm(a)), scale(residual, 1 / norm(residual))];
@@ -129,8 +136,7 @@ export function linearModel(m: Mat3) {
     point: transform(m, [1, 1, 1]),
     inverse: inv,
     conditionBound: inv ? norm(m) * norm(inv) : Infinity,
-    orientation:
-      Math.abs(det) < 1e-8 ? "Collapsed" : det < 0 ? "Reversed" : "Preserved",
+    orientation: det === 0 ? "Collapsed" : det < 0 ? "Reversed" : "Preserved",
     eigen:
       Math.abs(m[6]) + Math.abs(m[7]) + Math.abs(m[2]) + Math.abs(m[5]) < 1e-8
         ? eigen2(m[0], m[1], m[3], m[4])

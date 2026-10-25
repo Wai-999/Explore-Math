@@ -86,9 +86,21 @@ export function SceneFrame({
       <div className="scene-bottomline">
         <span className="scene-legend">
           <i className="solid" />{" "}
-          {scene.kind === "calculus" ? "Particle / path" : "Transformed"}{" "}
+          {scene.kind === "calculus"
+            ? "Particle / path"
+            : scene.kind === "business"
+              ? "Profit / quantity"
+              : scene.kind === "regression"
+                ? "Fitted line"
+                : "Transformed"}{" "}
           <i className="dashed" />{" "}
-          {scene.kind === "calculus" ? "Tangent plane" : "Original"}
+          {scene.kind === "calculus"
+            ? "Tangent plane"
+            : scene.kind === "business"
+              ? "Dollars / day"
+              : scene.kind === "regression"
+                ? "Residuals"
+                : "Original"}
         </span>
         <div className="scene-tools">
           {can3d && (
@@ -116,7 +128,9 @@ export function SceneFrame({
       </div>
       <p className="stage-help">
         {mode === "3d" && available && !lost
-          ? "Drag empty space to orbit · scroll or pinch to zoom · drag a basis tip in the xy plane"
+          ? scene.kind === "linear"
+            ? "Drag empty space to orbit · scroll or pinch to zoom · drag a basis tip in the xy plane"
+            : "Drag empty space to orbit · scroll or pinch to zoom · use controls to change the model"
           : scene.kind === "linear"
             ? "Drag a basis tip in the xy plane · dashed edges show the original cube"
             : "Use the labeled controls to change the model"}

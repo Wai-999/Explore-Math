@@ -124,7 +124,7 @@ export default function LinearWorld() {
               <p>
                 {model.inverse
                   ? "An inverse exists and can recover original coordinates."
-                  : "No stable inverse is available: the determinant is zero or below the 10⁻⁸ threshold."}
+                  : "No stable inverse is available: the determinant is zero or below a scale-relative 10⁻⁸ threshold."}
               </p>
               <p>
                 Projection of b2 onto b1:{" "}
@@ -154,8 +154,8 @@ export default function LinearWorld() {
                     : `Real xy eigenpairs: ${model.eigen.pairs.map((p) => `λ = ${fmt(p.value)}, v = ${tuple(p.vector)}`).join("; ")}.`}
               </p>
               <p>
-                Null-space dimension: {3 - model.rank}. A collapsed direction
-                cannot be recovered.
+                Numerical nullity at the stated tolerance: {3 - model.rank}. A
+                collapsed direction cannot be recovered.
               </p>
             </div>
           )}
@@ -235,7 +235,7 @@ export default function LinearWorld() {
           <div className="panel-note">
             <span className="tiny-dot" />{" "}
             {model.rank < 3
-              ? "Space collapsed. At least one dimension is lost."
+              ? "Numerically rank-deficient. A dimension is zero or tiny at this tolerance."
               : model.det < 0
                 ? "Orientation flipped, like a mirror."
                 : "The basis arrows define the transformed space."}
