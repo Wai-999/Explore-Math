@@ -5,3 +5,8 @@ test-results/
 .DS_Store
 *.tsbuildinfo
 .codebase-memory/
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+workshop-results/

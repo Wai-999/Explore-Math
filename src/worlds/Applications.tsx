@@ -1,3 +1,4 @@
+import { StudioEntry } from "../prediction/StudioLinks";
 import { Formula } from "../components/Formula";
 import { useMemo, useState } from "react";
 import { applicationCards } from "../content/lessons";
@@ -30,6 +31,7 @@ export function ApplicationIndex() {
           powerful ideas.
         </p>
       </div>
+      <StudioEntry />
       <div className="filter-row">
         <label>
           Domain
@@ -155,7 +157,7 @@ export default function ApplicationMission({ id }: { id: ApplicationId }) {
               ? "Your camera points along the requested direction."
               : id === "business"
                 ? `At ${fmt(q)} units/day, marginal profit is ${fmt(bm.marginal)} $/unit, close to zero.`
-                : "Your line minimizes training error to within the target tolerance. Evaluate it on held-out observations next.")
+                : "Your line minimizes training error to within the target tolerance. Evaluate it on validation observations next; repeated tuning uses development data.")
         : "Keep exploring. " +
             (id === "robot"
               ? "Try yaw 45°, then tilt 60°. Reversing the order leaves a different viewing direction."
@@ -232,9 +234,9 @@ export default function ApplicationMission({ id }: { id: ApplicationId }) {
                   detail="five synthetic observations · unit²"
                 />
                 <Metric
-                  label="Evaluation MSE"
+                  label="Validation MSE"
                   value={fmt(lm.test, 4)}
-                  detail="three held-out observations · unit²"
+                  detail="three development observations · unit²"
                 />
                 <Metric
                   label="Model"
@@ -305,8 +307,8 @@ export default function ApplicationMission({ id }: { id: ApplicationId }) {
                   <p>
                     Synthetic unitless x and y observations. The model is y =
                     mx+b. Vertical dashed lines are observed y minus predicted
-                    y. The displayed training points are distinct from held-out
-                    evaluation points.
+                    y. The displayed training points are distinct from
+                    development validation points.
                   </p>
                   <table>
                     <caption>Training observations and residuals</caption>
@@ -331,8 +333,10 @@ export default function ApplicationMission({ id }: { id: ApplicationId }) {
                   </table>
                   <p>
                     A low training loss does not establish causality or
-                    guarantee performance on future data. The evaluation set is
-                    small and synthetic.
+                    guarantee performance on future data. This validation set is
+                    small and synthetic. Repeatedly tuning against it is
+                    development, not a blind final test. Open Prediction studio
+                    for a frozen-test workflow.
                   </p>
                 </>
               )}
@@ -352,7 +356,7 @@ export default function ApplicationMission({ id }: { id: ApplicationId }) {
                 ? "Each rotation acts on the result of the previous one. The second turn changes a different direction when you swap the order. This is why graphics engines and robot coordinate frames must agree on conventions."
                 : id === "business"
                   ? "Profit rises when an extra unit earns more than it costs. As demand pushes the price down, that benefit shrinks. At an interior maximum, marginal profit is zero; the negative second derivative confirms a peak."
-                  : "Least squares finds the line with the smallest sum of squared vertical errors. Squaring makes large errors count more and prevents positive and negative errors from cancelling. An unseen evaluation set checks a different question: does the pattern extend?"}
+                  : "Least squares finds the line with the smallest sum of squared vertical errors. Squaring makes large errors count more and prevents positive and negative errors from cancelling. Validation feedback checks whether the pattern extends to separate development observations. Reserve a truly untouched final test after all model choices."}
             </p>
             <details
               onToggle={(e) => {
@@ -496,7 +500,7 @@ export default function ApplicationMission({ id }: { id: ApplicationId }) {
               ? "Match the direction produced by yaw 45°, then tilt 60°. Swap the order to test your prediction."
               : id === "business"
                 ? "Find the daily production that maximizes profit, within the stated capacity. Then try a new demand scenario."
-                : "Tune the two coefficients to minimize training error. Then compare the separate evaluation error."}
+                : "Tune the two coefficients to minimize training error. Then compare the validation error; these values guide development, not a blind final test."}
           </p>
         </div>
         <div className="mission-action">

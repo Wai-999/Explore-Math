@@ -3,6 +3,23 @@ on: [push, pull_request]
 permissions:
   contents: read
 jobs:
+  workshops:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: public/workshops/requirements.txt
+      - run: python -m pip install -r public/workshops/requirements.txt
+      - run: python -m unittest discover -s public/workshops -p 'test_workshop.py' -v
+      - run: python scripts/build_workshops.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: executed-learning-materials
+          path: workshop-results/
   validate:
     runs-on: ubuntu-latest
     steps:

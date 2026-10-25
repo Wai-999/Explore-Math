@@ -1,5 +1,7 @@
 # Accessibility and fallbacks
 
+Prediction Studio adds semantic stage navigation, native labeled inputs/radio groups, real disabled states for frozen controls, readable numeric metrics/tables, and SVG plots with textual descriptions. Learning remains possible without WebGL; 3D is not forced onto forecasting or calibration. Every stage was scanned in both themes; physical/human assistive-technology review remains pending. Backup schema v2 supports v1 migration and up to 5 MB of validated progress/journals. Prediction controls and data remain local.
+
 Essential calculations have labeled native numeric inputs/sliders, prediction radio groups, text interpretations, and optional data tables. No assessment requires camera rotation, color discrimination, sound, or pointer dragging. Basis labels, solid versus dashed geometry, numeric coordinates, and original/transformed labels supplement color.
 
 - Tab/Shift+Tab moves through controls. Arrow keys edit numeric inputs/sliders. Radio groups use native keyboard behavior. Visible focus outlines, a skip link, main focus on navigation, labeled navigation, fieldsets, table captions, and status feedback are provided.

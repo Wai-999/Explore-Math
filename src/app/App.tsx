@@ -17,6 +17,15 @@ const ApplicationIndex = lazy(() =>
     default: m.ApplicationIndex,
   })),
 );
+const PredictionStudio = lazy(() => import("../prediction/PredictionStudio"));
+const StudioEntry = lazy(() =>
+  import("../prediction/StudioLinks").then((m) => ({ default: m.StudioEntry })),
+);
+const StudioBacklog = lazy(() =>
+  import("../prediction/StudioLinks").then((m) => ({
+    default: m.StudioBacklog,
+  })),
+);
 const LinearWorld = lazy(() => import("../worlds/LinearWorld"));
 const CalculusWorld = lazy(() => import("../worlds/CalculusWorld"));
 const ApplicationMission = lazy(() => import("../worlds/Applications"));
@@ -143,6 +152,7 @@ function Discover({ solved }: { solved: number }) {
           </div>
         </div>
       </section>
+      <StudioEntry />
       <div className="section-heading">
         <div>
           <span className="eyebrow">CHOOSE A WORLD</span>
@@ -296,6 +306,7 @@ function Challenges() {
           Make a prediction, explore, then solve a new mathematical problem.
         </p>
       </div>
+      <StudioEntry />
       <div className="challenge-list">
         {[
           {
@@ -357,7 +368,7 @@ function MyLearning({
     );
     const a = document.createElement("a");
     a.href = url;
-    a.download = "math-world-learning-v1.json";
+    a.download = "math-world-learning-v2.json";
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -455,7 +466,13 @@ function MyLearning({
             }
           >
             {["intuition", "foundations", "advanced", "research"].map((x) => (
-              <option key={x}>{x}</option>
+              <option key={x} value={x}>
+                {x === "advanced"
+                  ? "Professional practice"
+                  : x === "research"
+                    ? "Research connections"
+                    : x}
+              </option>
             ))}
           </select>
           <p className="caption">
@@ -481,6 +498,10 @@ function MyLearning({
                 onChange={async (e) => {
                   const f = e.target.files?.[0];
                   if (!f) return;
+                  if (f.size > 5_000_000) {
+                    setMessage("Backup is too large (maximum 5 MB).");
+                    return;
+                  }
                   try {
                     const next = parseLearning(await f.text());
                     download();
@@ -502,9 +523,10 @@ function MyLearning({
           </div>
           <p role="status">{message || notice}</p>
           <p className="caption">
-            Schema v1: theme, depth, bookmarks, attempt counts, and dated
-            solution evidence. Browser storage may be cleared by private mode or
-            device settings.
+            Schema v2: theme, depth, bookmarks, solution evidence, prediction
+            experiments, and decision journals. Version 1 backups migrate
+            without deleting the original browser key. Browser storage may be
+            cleared by private mode or device settings.
           </p>
         </section>
         <section className="learning-card">
@@ -534,6 +556,49 @@ function MyLearning({
           </p>
         </section>
       </div>
+      <section className="learning-card studio-progress">
+        <h2>Prediction practice, over time</h2>
+        <p>
+          Frozen experiments preserve their protocol after reload. Fresh
+          experiments archive completed journals. Free-text rationales are
+          retained for human review; automated checks assess only structured
+          answers.
+        </p>
+        <a className="text-button" href="#/explore/prediction">
+          Continue prediction studio →
+        </a>
+        {Object.entries(learning.studio).map(([id, s]) => (
+          <p key={id}>
+            {id} · seed {s.seed} ·{" "}
+            {s.tested
+              ? "final test opened"
+              : s.frozen
+                ? "frozen"
+                : "development"}{" "}
+            · {s.hintUsed ? "guided" : "guidance unopened"}
+            {s.misconceptions?.length
+              ? ` · Review: ${s.misconceptions.join(" ")}`
+              : ""}
+          </p>
+        ))}
+        {learning.studioHistory.map((h, i) => (
+          <details key={i}>
+            <summary>
+              {h.project} · seed {h.seed} ·{" "}
+              {h.guided ? "guided" : "structured practice"} ·{" "}
+              {new Date(h.at).toLocaleDateString()}
+            </summary>
+            <p>Hypothesis: {h.hypothesis}</p>
+            <p>Interpretation: {h.interpretation}</p>
+            <p>Operating decision: {h.decision}</p>
+          </details>
+        ))}
+        <p className="caption">
+          Review a different seed after seven days to check retention. This is a
+          suggestion, not a validated retention assessment.
+        </p>
+      </section>
+      <StudioBacklog />
     </>
   );
 }
@@ -713,7 +778,9 @@ export default function App() {
               <div className="subject-tabs">
                 <a
                   href="#/explore/linear"
-                  className={sub !== "calculus" ? "active" : ""}
+                  className={
+                    sub !== "calculus" && sub !== "prediction" ? "active" : ""
+                  }
                 >
                   <Icon name="Box" size={16} /> Linear algebra
                 </a>
@@ -723,6 +790,12 @@ export default function App() {
                 >
                   <Icon name="Activity" size={16} /> Calculus
                 </a>
+                <a
+                  href="#/explore/prediction"
+                  className={sub === "prediction" ? "active" : ""}
+                >
+                  <Icon name="FlaskConical" size={16} /> Prediction studio
+                </a>
               </div>
             )}
             <Suspense
@@ -731,7 +804,9 @@ export default function App() {
               {active === "discover" ? (
                 <Discover solved={learning.solved.length} />
               ) : active === "explore" ? (
-                sub === "calculus" ? (
+                sub === "prediction" ? (
+                  <PredictionStudio />
+                ) : sub === "calculus" ? (
                   <CalculusWorld />
                 ) : (
                   <LinearWorld />
