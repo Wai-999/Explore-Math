@@ -2,6 +2,8 @@
 
 A standalone mathematics discovery studio. Change a matrix, descend an energy surface, and use the same mathematics to orient a camera, choose production, or fit a line. The core runs entirely in your browser, without accounts, tracking, APIs, or a backend.
 
+![Discover studio](docs/screenshots/discover-desktop.png)
+
 ## Run locally
 
 Requires Node.js 24 and npm.
