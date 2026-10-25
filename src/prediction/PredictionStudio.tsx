@@ -39,6 +39,8 @@ import {
 import { perspectives, projects, stages } from "./curriculum";
 import { LossPlot, PredictionPlot } from "./Plots";
 import { StudioBacklog } from "./StudioLinks";
+import { BatchHandoff } from "./BatchHandoff";
+import { exportArtifact } from "./handoff";
 import "../styles/prediction.css";
 const percentage = (n: number | null) =>
   n === null ? "undefined" : `${fmt(n * 100, 1)}%`;
@@ -1106,6 +1108,12 @@ export default function PredictionStudio() {
                 onChange={(e) => edit({ decision: e.target.value })}
                 placeholder="Owner; manual fallback; label delay; monitoring cadence; rollback condition…"
               />
+              {session.tested && (
+                <BatchHandoff
+                  key={id}
+                  artifact={exportArtifact(data, session)}
+                />
+              )}
               <details>
                 <summary>Monitoring and distribution shift experiment</summary>
                 <p>
@@ -1182,7 +1190,7 @@ export default function PredictionStudio() {
                 <div>
                   <h3>Rebuild it in Python.</h3>
                   <p>
-                    Four executed notebooks, transparent algorithms,
+                    Five executed notebooks, transparent algorithms,
                     scikit-learn pipelines, data dictionaries, tests, and answer
                     keys. Python runs on your computer, not on GitHub Pages.
                   </p>

@@ -50,3 +50,9 @@ Use VoiceOver or NVDA for a complete keyboard journey, equations, radio groups, 
 ## Release decision
 
 Merge and publish the candidate only after required reviewer observations are recorded and material defects resolved. Keep individual checks PASS/FAIL/NOT RUN and retain the older mathematics backlog. A successful CI run does not turn pending human review into PASS. No public release claim is made for this branch.
+
+## Additional handoff review — NOT RUN
+
+After the final evaluation, expand **Use the frozen model on a new batch** in step 7. Explain which fitted transforms and versions must travel with coefficients. Export the model, score the provided inputs, and reproduce its predictions with the kit's `serve.py`. Reject a late input, distinguish an input-range warning from measured error, and review labels at hour 0 and at the declared arrival. Attempt the fifth notebook's staggered-arrival exercise before reading `solutions/HANDOFF.md`.
+
+Inspect matching/duplicate IDs, label-window maturity, pending denominators, source-time trust, selective labels, the limited portable model format, the explicitly fabricated outcomes, and the absence of automatic rollout/retraining. These are additional concrete human review tasks, not completed observations.

@@ -67,4 +67,91 @@ class WorkshopChecks(unittest.TestCase):
         self.assertEqual([r['cutoff'] for r in results],[42,48,54])
         self.assertTrue(all(r['n_validation']==18 for r in results))
 
+class HandoffChecks(unittest.TestCase):
+    def example(self, project='energy'):
+        from serve import artifact_from_manual
+        training=partition(make_dataset(project),'train')
+        artifact=artifact_from_manual(project,manual_fit(training,project=='maintenance'),training)
+        inputs=[dict(id=f'batch-{i}',predictionTime=0,features={f['key']:dict(value=(i if f['key']=='approved_promotion' else f['min']+.5*(f['max']-f['min'])),availableAt=0) for f in artifact['features']}) for i in range(2)]
+        return artifact,inputs
+
+    def test_exported_predictions_match_transparent_model(self):
+        from serve import score_batch, artifact_from_manual
+        for project in ('energy','maintenance','demand'):
+            training=partition(make_dataset(project),'train');validation=partition(make_dataset(project),'validation')[:2]
+            model=manual_fit(training,project=='maintenance')
+            artifact=artifact_from_manual(project,model,training)
+            inputs=[dict(id=r['id'],predictionTime=0,features={f['key']:dict(value=r['x'][i],availableAt=0) for i,f in enumerate(artifact['features'])}) for r in validation]
+            np.testing.assert_allclose([r['prediction'] for r in score_batch(artifact,inputs)['rows']],manual_predict(model,validation),atol=1e-10)
+
+    def test_delayed_labels_have_honest_denominators(self):
+        from serve import score_batch, monitor_batch
+        a,x=self.example();batch=score_batch(a,x)
+        labels=[dict(id=r['id'],actual=r['prediction']+(4 if i==0 else -8),availableAt=48+i*12) for i,r in enumerate(batch['rows'])]
+        self.assertIsNone(monitor_batch(batch,labels,0)['metrics'])
+        self.assertEqual(monitor_batch(batch,labels,48)['labeled'],1)
+        report=monitor_batch(batch,labels,60)
+        self.assertEqual((report['labeled'],report['pending']),(2,0))
+        self.assertEqual((report['metrics']['mae'],report['metrics']['bias']),(6,2))
+
+    def test_schema_and_availability_rejections(self):
+        from serve import score_batch
+        from copy import deepcopy
+        a,x=self.example()
+        bad=deepcopy(x);bad[0]['features']['temperature']['availableAt']=1
+        missing=deepcopy(x);del missing[0]['features']['temperature']
+        target=deepcopy(x);target[0]['features']['target']=dict(value=100,availableAt=0)
+        string=deepcopy(x);string[0]['features']['temperature']['value']='1'
+        for data in ([],bad,missing,target,string,[x[0],x[0]]):
+            with self.assertRaises(ValueError): score_batch(a,data)
+
+    def test_range_warning_cannot_establish_outcome_error(self):
+        from serve import score_batch, monitor_batch
+        a,x=self.example();x[0]['features']['temperature']['value']=a['features'][0]['max']+10
+        report=monitor_batch(score_batch(a,x),[],0)
+        self.assertEqual(report['outsideTrainingRange'],1)
+        self.assertIsNone(report['metrics'])
+
+    def test_invalid_labels_and_artifacts(self):
+        from serve import score_batch, monitor_batch, validate_artifact
+        a,x=self.example('maintenance');batch=score_batch(a,x)
+        label=dict(id='batch-0',actual=1,availableAt=72)
+        for labels in ([dict(label,availableAt=47)],[label,label],[dict(label,id='missing')],[dict(label,actual=2)],[dict(label,actual=float('nan'))]):
+            with self.assertRaises(ValueError): monitor_batch(batch,labels,100)
+        for artifact in (None,dict(a,schemaVersion=True),dict(a,schemaVersion=2),dict(a,predictor=dict(kind='logistic',weights=[]))):
+            with self.assertRaises(ValueError): validate_artifact(artifact)
+
+    def test_binary_tree_and_extreme_logits(self):
+        from serve import score_batch
+        a,x=self.example('maintenance')
+        a['predictor']=dict(kind='stump',feature=0,cut=0,left=.2,right=.8)
+        self.assertIn(score_batch(a,x)['rows'][0]['prediction'],(.2,.8))
+        a['predictor']=dict(kind='logistic',weights=[-1000,0,0],means=[0,0],scales=[1,1],targetMean=0,targetScale=1)
+        self.assertEqual(score_batch(a,x)['rows'][0]['prediction'],0)
+
+    def test_domain_constraints(self):
+        from serve import score_batch
+        a,x=self.example('demand')
+        from copy import deepcopy
+        for key,value in [('previous_week',-1),('calendar_season',2),('approved_promotion',2)]:
+            bad=deepcopy(x);bad[0]['features'][key]['value']=value
+            with self.assertRaises(ValueError): score_batch(a,bad)
+
+    def test_cli_roundtrip_and_no_partial_invalid_output(self):
+        from serve import read_json
+        from pathlib import Path
+        import json, subprocess, sys, tempfile
+        a,x=self.example()
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);model=root/'model.json';inputs=root/'inputs.json';out=root/'predictions.json'
+            model.write_text(json.dumps(a));inputs.write_text(json.dumps(x))
+            command=[sys.executable,str(Path(__file__).with_name('serve.py')),'score',str(model),str(inputs),str(out)]
+            self.assertEqual(subprocess.run(command,capture_output=True).returncode,0)
+            self.assertEqual(len(read_json(out)['rows']),2)
+            inputs.write_text('[]');out.unlink()
+            self.assertEqual(subprocess.run(command,capture_output=True).returncode,2)
+            self.assertFalse(out.exists())
+            inputs.write_text('[NaN]')
+            with self.assertRaises(ValueError): read_json(inputs)
+
 if __name__=='__main__': unittest.main()

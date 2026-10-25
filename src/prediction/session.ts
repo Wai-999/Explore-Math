@@ -55,7 +55,7 @@ export function validSession(v: unknown): v is StudioSession {
   const finite = (n: unknown, min: number, max: number) =>
     typeof n === "number" && Number.isFinite(n) && n >= min && n <= max;
   if (
-    !Number.isInteger(s.seed) ||
+    !Number.isSafeInteger(s.seed) ||
     s.seed < 0 ||
     !Number.isInteger(s.stage) ||
     s.stage < 0 ||

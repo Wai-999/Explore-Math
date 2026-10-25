@@ -1,8 +1,8 @@
 # Release status
 
-## Current review candidate: 0.2.0-rc.1
+## Current review candidate: 0.2.0-rc.2
 
-IMPLEMENTED AND TESTED FOR REVIEW on `feature/prediction-studio`. Three eight-stage predictive-modeling paths, persistent frozen evaluation, schema-v1 migration, decision journals, and four executed Python notebooks are added. See PREDICTION_CURRICULUM.md for the explicit COMPLETE/PARTIAL/PLANNED/NOT RUN audit.
+IMPLEMENTED AND TESTED FOR REVIEW on `feature/prediction-studio`. Three eight-stage predictive-modeling paths, persistent frozen evaluation, schema-v1 migration, decision journals, and five executed Python notebooks are added. The continuation adds frozen-model batch export/scoring, strict publication-time validation, delayed-outcome monitoring, and the fifth handoff notebook. See PREDICTION_CURRICULUM.md for the explicit COMPLETE/PARTIAL/PLANNED/NOT RUN audit.
 
 Review candidate: [draft PR #1](https://github.com/Wai-999/Explore-Math/pull/1). [Implementation CI](https://github.com/Wai-999/Explore-Math/actions/runs/40215489852) passed the browser and Python-workshop jobs. See TEST_REPORT.md for exact counts, environment limits, and the separately executed production-bundle checks.
 

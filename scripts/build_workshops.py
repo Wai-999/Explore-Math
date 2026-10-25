@@ -10,6 +10,7 @@ import zipfile
 import nbformat as nbf
 from nbclient import NotebookClient
 from nbconvert import HTMLExporter
+from handoff_notebook import handoff_cells
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'public' / 'workshops'
@@ -118,6 +119,7 @@ if __name__=='__main__':
         ('demand','Plan next week’s shelves — forecasting without hindsight','Prediction cutoff: Sunday 21:00. Target: next Monday–Sunday packs. Unit: store-week. Known-store future weeks, not new-store generalization. Assumed no stockouts and no reporting delays. The synthetic cycle is 12 weeks.')]:
         write_execute(project,base(project,title,contract)+(classification_cells() if project=='maintenance' else regression_cells(project))+extensions())
     write_execute('public-bike',public_data_notebook())
+    write_execute('handoff',handoff_cells())
     archive=OUT/'prediction-workshops.zip'
     with zipfile.ZipFile(archive,'w',zipfile.ZIP_DEFLATED) as bundle:
         for path in sorted(OUT.rglob('*')):

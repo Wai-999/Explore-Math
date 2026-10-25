@@ -12,6 +12,12 @@ The toy pilot rubric is explicit: regression must beat baseline MAE with absolut
 
 The Python companions additionally verify training-only median imputation, calibration on a distinct validation-machine subset, policy selection without test data, grouped/temporal tuning, nested forward evaluation for energy, SVD reconstruction/orthogonality on rectangular training matrices, and training-only PCA. The full interactive spectral curriculum remains planned. Exact data formulas, licenses, and limitations are in public/workshops/DATA.md.
 
+## Frozen-model handoff
+
+The JSON format preserves training-only feature means/scales, standardized-target inverse transformation, the stable logistic link, or the exact selected tree split/leaf values. Names determine feature order; new batches cannot fit transforms. Published-after-cutoff values, missing/extra fields, nonfinite values, invalid domains, incompatible dimensions/versions, and duplicate row IDs are rejected. Three cross-language tests execute the standalone Python scorer against actual browser-compatible artifacts; separate tree checks verify selected leaves.
+
+Monitoring joins unique matching IDs only. A label's availability must be at least prediction time plus the outcome window, and no later than the review time to count. Future-issued predictions do not enter the denominator. Empty eligible labels produce null metrics. Hand fixtures with residuals −4 and +8 verify MAE 6, bias +2, and RMSE √40; partial maturity reports only available outcomes. Binary metrics use the frozen threshold and explicit undefined denominators. Training-range warnings provide no independent evidence of changed error, and these checks cannot authenticate a source's recorded times.
+
 ## Conventions and tolerances
 
 Right-handed x,y,z coordinates, column vectors, row-major storage. A matrix entry at row r and column c has index 3r+c. Columns are transformed unit basis vectors. AB applies B first. Three.js Matrix4 receives explicitly mapped rows. Camera up is mathematical z. SVGs are labeled projections; the numeric state is authoritative. Coordinates are unitless except the explicitly labeled production model.

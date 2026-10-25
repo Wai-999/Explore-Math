@@ -12,6 +12,14 @@ Python materials add median-imputation pipelines, forests/boosting, validation-o
 
 Storage schema v2 migrates existing v1 progress while retaining the original v1 browser key. Backups include fitted teaching sessions, decisions, archived journals, guidance flags, structured attempts, and misconception feedback. Corrupt or incompatible models are rejected; no remote storage is introduced.
 
+## Applied handoff continuation — 0.2.0-rc.2
+
+After final evaluation, step 7 can export the exact gradient model or fitted one-split tree, input schema, training transforms/ranges, units, forecast window, frozen threshold, software version, and synthetic-generator version. A local JSON batch exercise validates publication times, feature domains, finite values, and unique IDs; scoring never fits preprocessing. Browser downloads run unchanged through `public/workshops/serve.py`, using only Python's standard library.
+
+Delayed-label review excludes outcomes that have not arrived or whose forecast windows have not ended, rejects duplicate/unmatched IDs, and shows the eligible denominator and pending count. No observed labels means unavailable error metrics. Input-range warnings remain separate from outcome performance. These are marginal range checks, not a general drift detector. An additional executed handoff notebook and independent exercise explain the decisions; five notebooks are now in the kit.
+
+This is a local educational operating workflow. The synthetic handoff labels are fabricated, timestamp metadata are not authenticated, and a selectively labeled sample can bias results. The format supports these small browser models; full library pipelines with imputers or calibrated wrappers require their own supported persistence. No service is deployed, no retraining runs automatically, and no human-review backlog item becomes complete.
+
 ## Prerequisite sequence
 
 Coordinates and arithmetic → functions/residuals → averages and baseline errors → matrix/projection view of regression → derivatives/gradients → optimization and regularization → binary probability and log loss → decisions/thresholds/calibration → grouped/time evaluation → error diagnosis/uncertainty → conditional operating recommendation → SVD/PCA and deeper numerical reasoning.

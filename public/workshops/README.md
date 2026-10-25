@@ -25,3 +25,16 @@ The browser uses hand-written linear/logistic gradients and a one-split tree. Th
 Each notebook finishes with a transfer task and an open capstone. Write a model card and decision record using TEMPLATES.md. Worked explanations are in a separate solutions folder so an instructor can assign a fresh seed before sharing them. Your free-text reasoning needs human feedback; a passed numeric check does not prove mastery.
 
 References: scikit-learn official common-pitfalls, cross-validation, calibration, model-evaluation, pipeline, and decomposition documentation; Hyndman and Athanasopoulos, Forecasting: Principles and Practice, chapter 5. Links and exact data provenance are in DATA.md.
+
+## From frozen model to batch use
+
+`handoff.ipynb` teaches portable model export, strict input/timing checks, local batch predictions, and outcome monitoring after labels mature. In browser step 7, expand **Use the frozen model on a new batch** after the final evaluation. Download the artifact, score the provided inputs, and download their JSON. Then run:
+
+```sh
+python serve.py score energy-frozen-model.json energy-batch.json predictions.json
+python serve.py monitor predictions.json energy-labels.json 48 report.json
+```
+
+Use the corresponding project filenames for demand or maintenance. The last time is elapsed hours: the default reports arrive at 48 (energy), 72 (maintenance), or 192 (demand). The standard-library scorer does not fit or load executable model objects. It preserves the browser's exact training transforms and threshold. It supports only the exported linear/logistic and one-split-tree models; it does not export arbitrary library pipelines, imputers, or calibrated wrappers. Missing features are rejected.
+
+All labels in this handoff exercise are explicitly fabricated. A range warning does not prove that prediction error deteriorated; no labels means outcome performance is unavailable. A selectively labeled sample may give a biased estimate. Keep the original artifact and decision records for rollback. These files do not authenticate their timestamps or prove operational safety. This is a local learning workflow, not an automatically deployed monitoring service.

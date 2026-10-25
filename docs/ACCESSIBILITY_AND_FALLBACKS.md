@@ -12,3 +12,7 @@ Essential calculations have labeled native numeric inputs/sliders, prediction ra
 - Midnight/daylight/system appearance and four explanation depths are preferences. Fonts and KaTeX MathML are bundled locally.
 
 Automated axe scans cover essential paths in both themes. Browser simulation does not replace VoiceOver/NVDA use, real touchscreen orbit/pinch tests, physical low-end mobile measurements, or human usability review. See TEST_REPORT for executed and unexecuted evidence. These limitations prevent an unqualified production/accessibility certification claim.
+
+## Batch handoff continuation
+
+The optional step-7 details panel uses labeled JSON textareas, native numeric review time, buttons, table captions, status/error feedback, and downloadable local files. All three projects have expanded-panel axe checks in both themes and 390 px overflow checks. Input and label textareas reset their computed results on editing, preventing stale results from being presented as current. Physical-device and human screen-reader review remain NOT RUN.
