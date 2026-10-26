@@ -1,5 +1,9 @@
 # Release status
 
+## V2 R1 review candidate: 0.3.0-rc.1
+
+Four guided mathematics paths and two safe project templates are implemented on `feat/deep-explore-learning-v2`, based on the Prediction Studio candidate. See [the factual V2 release report](v2/RELEASE_AND_REMAINING_WORK.md) and [quality evidence](v2/TEST_AND_USABILITY_REPORT.md). This is a review candidate; the public v0.1 release remains unchanged and independent human review is pending.
+
 ## Current review candidate: 0.2.0-rc.2
 
 IMPLEMENTED AND TESTED FOR REVIEW on `feature/prediction-studio`. Three eight-stage predictive-modeling paths, persistent frozen evaluation, schema-v1 migration, decision journals, and five executed Python notebooks are added. The continuation adds frozen-model batch export/scoring, strict publication-time validation, delayed-outcome monitoring, and the fifth handoff notebook. See PREDICTION_CURRICULUM.md for the explicit COMPLETE/PARTIAL/PLANNED/NOT RUN audit.

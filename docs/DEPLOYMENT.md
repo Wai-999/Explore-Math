@@ -2,7 +2,7 @@
 
 Repository: `https://github.com/Wai-999/Explore-Math`.
 
-Prediction Studio `0.2.0-rc.2` is a review candidate on `feature/prediction-studio`. The public site remains v0.1. The user's predictive-modeling master prompt, section 7, requires the prior human usability gate before releasing additional mission families. Complete [the review package](review/PREDICTION_STUDIO_REVIEW.md), resolve material findings, and record the release decision before merging to main. Branch CI validates the candidate; it does not publish Pages. Do not dispatch the Pages workflow for this candidate while that gate is pending.
+V2 `0.3.0-rc.1` is stacked on the preserved Prediction Studio candidate. Its release and exact review dependencies are recorded in [the V2 release report](v2/RELEASE_AND_REMAINING_WORK.md). Prediction Studio `0.2.0-rc.2` is a review candidate on `feature/prediction-studio`. The public site remains v0.1. The user's predictive-modeling master prompt, section 7, requires the prior human usability gate before releasing additional mission families. Complete [the review package](review/PREDICTION_STUDIO_REVIEW.md), resolve material findings, and record the release decision before merging to main. Branch CI validates the candidate; it does not publish Pages. Do not dispatch the Pages workflow for this candidate while that gate is pending.
 
 The app is built statically with default Vite base `/Explore-Math/`. `VITE_BASE_PATH` overrides it, e.g. `VITE_BASE_PATH=/ npm run build` for a user-root site. Hash routes work without server rewrites. All fonts, lazy chunks, equations, CSS, and geometry are local build assets.
 
