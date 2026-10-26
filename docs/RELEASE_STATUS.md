@@ -1,16 +1,16 @@
 # Release status
 
-## V2 R1 review candidate: 0.3.0-rc.1
+## V2 R1 public preview: 0.3.0-preview.1
 
-Four guided mathematics paths and two safe project templates are implemented on `feat/deep-explore-learning-v2`, based on the Prediction Studio candidate. See [the factual V2 release report](v2/RELEASE_AND_REMAINING_WORK.md) and [quality evidence](v2/TEST_AND_USABILITY_REPORT.md). This is a review candidate; the public v0.1 release remains unchanged and independent human review is pending.
+Four guided mathematics paths and two safe project templates are implemented on `feat/deep-explore-learning-v2`, based on the Prediction Studio candidate. See [the factual V2 release report](v2/RELEASE_AND_REMAINING_WORK.md) and [quality evidence](v2/TEST_AND_USABILITY_REPORT.md). The owner explicitly authorized publishing this as a preview on October 26, 2026, with human reviews pending. The app shows a preview label; completed workflow and live verification evidence are recorded in [PR #2](https://github.com/Wai-999/Explore-Math/pull/2). This authorization does not establish educational effectiveness.
 
-## Current review candidate: 0.2.0-rc.2
+## Included Prediction Studio candidate: 0.2.0-rc.2
 
 IMPLEMENTED AND TESTED FOR REVIEW on `feature/prediction-studio`. Three eight-stage predictive-modeling paths, persistent frozen evaluation, schema-v1 migration, decision journals, and five executed Python notebooks are added. The continuation adds frozen-model batch export/scoring, strict publication-time validation, delayed-outcome monitoring, and the fifth handoff notebook. See PREDICTION_CURRICULUM.md for the explicit COMPLETE/PARTIAL/PLANNED/NOT RUN audit.
 
 Review candidate: [draft PR #1](https://github.com/Wai-999/Explore-Math/pull/1). [Implementation CI](https://github.com/Wai-999/Explore-Math/actions/runs/40215489852) passed the browser and Python-workshop jobs. See TEST_REPORT.md for exact counts, environment limits, and the separately executed production-bundle checks.
 
-Public release of the new mission families awaits the independent human usability/math review required by section 7 of the user's predictive-modeling master prompt. The review instructions and concrete learner tasks are in review/PREDICTION_STUDIO_REVIEW.md. No human-review result is fabricated. The existing public v0.1 release described below is historical, verified evidence and remains unchanged until the candidate is approved through that gate.
+The original release hold required independent human usability/math review under section 7 of the user's predictive-modeling master prompt. The owner subsequently authorized preview publication with those checks pending. The review instructions and concrete learner tasks are in review/PREDICTION_STUDIO_REVIEW.md. No human-review result is fabricated. The v0.1 release described below is historical, verified evidence.
 
 ## Previously deployed release: 0.1.0
 

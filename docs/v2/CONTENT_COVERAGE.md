@@ -1,6 +1,6 @@
 # V2 content coverage and curriculum dependencies
 
-Candidate 0.3.0-rc.1, October 26, 2026. “Complete” below means the implemented R1 lesson contract is present and software-tested. Beginner comprehension and educational effectiveness remain unverified by humans. All new content is original and labeled machine-checked for numerical/content fixtures, not human-reviewed or formally verified prose.
+Preview 0.3.0-preview.1, October 26, 2026. “Complete” below means the implemented R1 lesson contract is present and software-tested. Beginner comprehension and educational effectiveness remain unverified by humans. All new content is original and labeled machine-checked for numerical/content fixtures, not human-reviewed or formally verified prose.
 
 ## Four available R1 paths
 

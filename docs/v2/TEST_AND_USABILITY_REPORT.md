@@ -1,6 +1,6 @@
 # V2 R1 test and usability report
 
-October 26, 2026; macOS host, Node 24.16.0, locked npm dependencies. Candidate 0.3.0-rc.1. All results below were executed; a software PASS does not certify teaching effectiveness. The baseline was captured before editing and is separately recorded in [baseline evidence](BASELINE_AND_LEARNING_GAPS.md).
+October 26, 2026; macOS host, Node 24.16.0, locked npm dependencies. Original candidate 0.3.0-rc.1; publication version 0.3.0-preview.1. All results below were executed; a software PASS does not certify teaching effectiveness. The baseline was captured before editing and is separately recorded in [baseline evidence](BASELINE_AND_LEARNING_GAPS.md).
 
 ## Quality gates
 
@@ -16,11 +16,15 @@ October 26, 2026; macOS host, Node 24.16.0, locked npm dependencies. Candidate 0
 | `npm run test:e2e -- --reporter=line`                                                                      | PASS            | **87/87**, Chromium/Firefox/WebKit, 1.2 min. No skipped cases in this local run. Baseline was 54/54.                                                                                                                                           |
 | `TEST_BASE_URL=http://127.0.0.1:4174/Explore-Math/ npm run test:e2e -- --project=chromium --reporter=line` | PASS            | **29/29**, 36.9 s, built bundle served with the actual subpath. This is local production verification, not deployed V2.                                                                                                                        |
 | Additional built-bundle visual/lazy-load audit                                                             | PASS            | Chromium 156.0.8078.4: direct concept routes, optional matrix 3D canvas ready and pixel change after matrix edit, vector/default-plane routes do not request ThreeStage, 375 px light builder/vector screenshots; zero `pageerror` exceptions. |
-| V2 GitHub Pages production deployment                                                                      | NOT RUN         | Candidate held for the existing human-review gate. Public v0.1 was browser-checked in the baseline.                                                                                                                                            |
+| V2 GitHub Pages production deployment                                                                      | NOT RUN         | Owner authorized preview publication with human checks pending. Actual Pages/live evidence is appended to PR #2 after verification. Public v0.1 was checked in the baseline.                                                                   |
 | Independent educator / novice / delayed retention                                                          | NOT RUN         | No real participants, comprehension gains or effectiveness claim.                                                                                                                                                                              |
 | Human screen reader / physical phone touch-pinch-orbit / low-end battery                                   | NOT RUN         | Browser emulation and axe do not establish these outcomes.                                                                                                                                                                                     |
 
 Final source checks and local browser logs were retained under `/private/tmp/explore-math-v2-*` during implementation. They are transient local diagnostics; the committed test files, screenshots, this report and PR/CI links are durable review evidence. CI runs the unchanged Python workshop job as well as the app suite; the five inherited notebooks were not modified by V2.
+
+## Completed GitHub CI
+
+[Run 40358675047](https://github.com/Wai-999/Explore-Math/actions/runs/40358675047) passed for source head `a351c19` on October 26, 2026. Clean installation, typecheck, lint, format check, 165 unit tests and production build passed. The Linux browser run passed **85 tests and skipped 2** existing WebGL-only checks because that runner did not provide WebGL2; the SVG/numeric alternatives were exercised. Those two actual 3D checks passed in the local 87/87 run. The separate Python job passed **18 tests and executed all five notebooks**. No gate was removed or weakened.
 
 ## What the browser suite establishes
 

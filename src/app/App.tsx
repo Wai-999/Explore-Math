@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from "react";
+import { version as releaseVersion } from "../../package.json";
 import { Icon, type icons } from "../components/Icon";
 import { SceneFrame } from "../engine/SceneFrame";
 import { rotation } from "../math/linear";
@@ -435,6 +436,17 @@ function MyLearning({
           pressure.
         </p>
       </div>
+      <section
+        className="learning-card"
+        aria-labelledby="preview-release-title"
+      >
+        <h2 id="preview-release-title">Learning preview · {releaseVersion}</h2>
+        <p>
+          Explore the tested lessons and projects while independent human
+          mathematics and beginner-usability reviews remain pending. Automated
+          checks do not establish educational effectiveness.
+        </p>
+      </section>
       <JourneySummary />
       <div className="learning-grid">
         <section className="learning-card">
@@ -871,7 +883,13 @@ export default function App() {
               <Icon name={menu ? "X" : "Menu"} />
             </button>
             <div className="breadcrumb">
-              <span>THE STUDIO</span>
+              <a
+                className="preview-label"
+                href="#/learning"
+                aria-label="Preview release details"
+              >
+                PREVIEW
+              </a>
               <Icon name="ChevronRight" size={14} />
               <strong>
                 {destinations.find((d) => d.id === active)?.label}

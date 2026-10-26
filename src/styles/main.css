@@ -244,7 +244,8 @@ svg {
   font-size: 11px;
   color: var(--faint);
 }
-.breadcrumb > span {
+.breadcrumb > span,
+.breadcrumb > .preview-label {
   font-size: 9px;
   letter-spacing: 1.6px;
 }
@@ -1867,6 +1868,9 @@ select {
     gap: 10px;
   }
   .breadcrumb > span {
+    font-size: 8px;
+  }
+  .breadcrumb > .preview-label {
     font-size: 8px;
   }
   .topbar-right {

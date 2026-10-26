@@ -1,10 +1,10 @@
-# V2 R1 release and remaining work
+# V2 R1 preview release and remaining work
 
-October 26, 2026. **Review candidate, not deployed.** Version 0.3.0-rc.1 on `feat/deep-explore-learning-v2`, based on `89e8c998c261949e2be5d253bd815aef8640110a` (`feature/prediction-studio`). The original checkout was clean. No unrelated work or old learner keys were removed.
+October 26, 2026. Version **0.3.0-preview.1**. The owner explicitly selected “Publish as preview; human reviews remain pending.” This supersedes the earlier human-review hold for preview publication, while leaving the actual reviews NOT RUN. The application labels the release PREVIEW and explains pending reviews in My Learning. Automated tests do not establish beginner comprehension or educational effectiveness.
 
-**PR READY:** [V2 PR #2](https://github.com/Wai-999/Explore-Math/pull/2), targeting the preserved `feature/prediction-studio` branch. Two logical implementation/evidence commits are `a6beb27` and `608d341`; this report adds review metadata afterward. [Current PR checks](https://github.com/Wai-999/Explore-Math/pull/2/checks) are the authoritative CI state for the displayed PR head. Exact final head and completed run are reported in the execution handoff.
+Source: `feat/deep-explore-learning-v2`, based on the preserved Prediction Studio head `89e8c99`. Implementation/evidence commits include `a6beb27`, `608d341` and `a351c19`, followed by the preview-release changes. [V2 PR #2](https://github.com/Wai-999/Explore-Math/pull/2) contains the exact final source head, CI results and actual Pages/live verification evidence. [Prior candidate CI](https://github.com/Wai-999/Explore-Math/actions/runs/40358675047) passed 165 unit tests, 85 Linux browser tests with two explicit WebGL-only skips, 18 Python tests and all five notebooks. Local browser results were 87/87 and production-bundle results 29/29.
 
-The public [GitHub Pages site](https://wai-999.github.io/Explore-Math/) remains v0.1. The before-audit records actual live behavior and the last verified Pages source/workflow. V2 production-bundle checks are local checks of `/Explore-Math/`; they are not a deployed-V2 claim. Branch push/PR CI does not publish Pages. Exact candidate commit, PR and CI links are recorded in the PR and final execution report.
+Target: the existing [GitHub Pages site](https://wai-999.github.io/Explore-Math/). Publication is claimed only after the existing workflow succeeds and real live journeys pass. Branch CI alone does not publish Pages. No learner keys, old routes, existing missions or prior project work are removed.
 
 ## Delivered for review
 
@@ -12,13 +12,13 @@ Four R1 guided concept paths reuse the existing worlds: vectors/projection, matr
 
 Two complete template projects cover drone displacement and continuous convex business cost. JSON save/import/export, reports and runnable Python are implemented. The five destinations, existing challenges/applications, prior Prediction Studio and local learning kit remain. See [coverage](CONTENT_COVERAGE.md), [math validation](MATH_AND_PROOF_VALIDATION.md) and [test evidence](TEST_AND_USABILITY_REPORT.md).
 
-## Release decision and exact unblocking work
+## Preview decision and checks still open
 
-The previous user-invoked predictive-modeling master prompt requires independent usability/math review before public release of additional mission families (section 7), recorded in [the existing review package](../review/PREDICTION_STUDIO_REVIEW.md). That gate is still pending. The tested V2 PR is prepared for concrete review; the agent does not fabricate participants, approve its own human gate, merge to main or dispatch Pages while the gate remains.
+The earlier predictive-modeling master prompt required human usability/math review before additional mission families. The owner's later explicit preview-publication instruction changes that release condition. No human review result is fabricated or inferred from the owner's authorization.
 
-The owner should arrange an independent mathematics educator review and 3–5 novice volunteers using the short protocol in [the usability report](TEST_AND_USABILITY_REPORT.md). Record actual findings, fix material issues, and make the release decision. Human screen-reader, physical touch/orbit/pinch and low-end performance checks also remain. After approval: merge the preserved Prediction Studio dependency, retarget/merge V2 under repository policy, let the existing Pages workflow deploy, then verify the actual public routes, dynamic 3D chunks, SVG/no-WebGL path, proofs, backup migration and project round trip. Only then label V2 DEPLOYED.
+Merge the preserved Prediction Studio dependency, retarget/merge V2 under repository policy, let the existing Pages workflow deploy, then verify the actual public routes, dynamic 3D chunks, SVG/no-WebGL path, proofs, backup migration, application missions and project round trip. Keep the working tree clean and record the actual workflow/source/live results in PR #2 and the execution handoff. A green build without live interactions is insufficient.
 
-R1 is software-complete for this review candidate; the roadmap's beginner-comprehension exit criterion is **not established** by automation or an AI walkthrough. “Machine-checked” is not independent human review, proof-assistant verification or measured learning effectiveness.
+An independent mathematics educator, 3–5 novice volunteers, human screen-reader users, physical touch/orbit/pinch and low-end performance checks remain open. Use [the review protocol](TEST_AND_USABILITY_REPORT.md), record actual findings and fix material issues before claiming human validation or educational effectiveness. The roadmap's beginner-comprehension exit criterion remains unestablished. “Machine-checked” is not human review or formal proof-assistant verification.
 
 ## Prioritized backlog carried forward
 

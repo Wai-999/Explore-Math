@@ -1,6 +1,8 @@
 # Prediction Studio — concrete review package
 
-Status: implemented review candidate on `feature/prediction-studio`. This package does **not** record a completed human review. Existing public v0.1 remains the production release until the gate in the user’s predictive-modeling master prompt, section 7, is satisfied: “Honor the prior usability gate before releasing additional mission families.”
+October 26 update: the owner explicitly authorized inclusion in the V2 public preview with human reviews pending. This overrides the earlier publication hold for that preview only; all human-review items below remain NOT RUN. Actual release evidence is in [PR #2](https://github.com/Wai-999/Explore-Math/pull/2).
+
+Historical candidate status: implemented review candidate on `feature/prediction-studio`. This package does **not** record a completed human review. The original publication hold came from the user’s predictive-modeling master prompt, section 7: “Honor the prior usability gate before releasing additional mission families.”
 
 Review the source and CI in [draft PR #1](https://github.com/Wai-999/Explore-Math/pull/1).
 
