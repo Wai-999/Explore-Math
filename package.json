@@ -1,6 +1,6 @@
 {
   "name": "math-world-3d",
-  "version": "0.2.0-rc.2",
+  "version": "0.3.0-preview.1",
   "private": true,
   "type": "module",
   "scripts": {

@@ -1,10 +1,27 @@
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { transform, type Mat3, type Vec3 } from "../math/linear";
-import { curve, energy, type Point2, type SurfaceKind } from "../math/calculus";
+import {
+  curve,
+  energy,
+  gradient,
+  type Point2,
+  type SurfaceKind,
+} from "../math/calculus";
 import { business, TRAIN } from "../math/applications";
 export type SceneProps =
-  | { kind: "linear"; matrix: Mat3; onMatrix?: (m: Mat3) => void }
-  | { kind: "calculus"; surface: SurfaceKind; point: Point2; path: Point2[] }
+  | {
+      kind: "linear";
+      matrix: Mat3;
+      onMatrix?: (m: Mat3) => void;
+      highlight?: string;
+    }
+  | {
+      kind: "calculus";
+      surface: SurfaceKind;
+      point: Point2;
+      path: Point2[];
+      highlight?: string;
+    }
   | { kind: "robot"; matrix: Mat3 }
   | { kind: "business"; quantity: number; demand: number }
   | { kind: "regression"; slope: number; intercept: number };
@@ -38,10 +55,12 @@ export const project = ([x, y, z]: Vec3) => [
 ];
 export function GeometryView(props: SceneProps) {
   const svg = useRef<SVGSVGElement>(null);
+  const markerId = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const [drag, setDrag] = useState<number | null>(null);
   const matrix =
     props.kind === "linear" || props.kind === "robot" ? props.matrix : null;
   if (matrix) {
+    const highlight = props.kind === "linear" ? props.highlight : undefined;
     const pts = corners.map((p) => project(transform(matrix, p))),
       original = corners.map(project);
     const face = (indices: number[]) =>
@@ -142,8 +161,29 @@ export function GeometryView(props: SceneProps) {
           [1, 2, 6, 5],
           [4, 5, 6, 7],
         ].map((f, i) => (
-          <polygon key={i} points={face(f)} fill="url(#cube-fill)" />
+          <polygon
+            key={i}
+            points={face(f)}
+            fill="url(#cube-fill)"
+            opacity={
+              highlight === "volume"
+                ? 0.95
+                : highlight === "area" && i !== 0
+                  ? 0.2
+                  : 1
+            }
+          />
         ))}
+        {highlight === "area" && (
+          <polygon
+            data-testid="highlighted-area-face"
+            points={face([0, 1, 2, 3])}
+            fill="#80d8cd"
+            fillOpacity=".25"
+            stroke="#80d8cd"
+            strokeWidth="3"
+          />
+        )}
         {edges.map(([a, b], i) => (
           <line
             key={i}
@@ -152,7 +192,7 @@ export function GeometryView(props: SceneProps) {
             x2={pts[b][0]}
             y2={pts[b][1]}
             stroke="#bded92"
-            strokeWidth="1.7"
+            strokeWidth={highlight === "volume" ? 3.3 : 1.7}
           />
         ))}
         {[0, 1, 2].map((c) => {
@@ -165,7 +205,7 @@ export function GeometryView(props: SceneProps) {
                 x2={p[0]}
                 y2={p[1]}
                 stroke={["#d2ec9a", "#79d3c9", "#c8b6ec"][c]}
-                strokeWidth="3"
+                strokeWidth={highlight === "columns" ? 6 : 3}
               />
               <circle
                 data-testid={"vector-handle-" + c}
@@ -194,14 +234,43 @@ export function GeometryView(props: SceneProps) {
   if (props.kind === "calculus") {
     const to = ([x, y]: Point2) => [320 + x * 85, 205 + y * 60];
     const p = to(props.point);
+    const slice =
+      props.highlight === "x-slice"
+        ? {
+            from: to([-2.5, props.point[1]]),
+            to: to([2.5, props.point[1]]),
+            label: `Projected x-slice: y=${props.point[1].toFixed(2)}`,
+          }
+        : props.highlight === "y-slice"
+          ? {
+              from: to([props.point[0], -2.5]),
+              to: to([props.point[0], 2.5]),
+              label: `Projected y-slice: x=${props.point[0].toFixed(2)}`,
+            }
+          : null;
     return (
       <svg
         className="geometry-view"
         viewBox="0 0 640 410"
         role="img"
-        aria-label="Top-down contour view of the energy landscape with the current particle and descent path. Contours are equal energy."
+        aria-label={
+          props.surface === "bowl"
+            ? "Top-down contour view of the energy landscape with the current particle and descent path. Contours are equal energy."
+            : "Schematic top-down view of the two-valley landscape. Contours are illustrative; use the numeric energy and slice table for exact values."
+        }
       >
         <defs>
+          <marker
+            id={`${markerId}-gradient`}
+            viewBox="0 0 10 10"
+            refX="9"
+            refY="5"
+            markerWidth="6"
+            markerHeight="6"
+            orient="auto"
+          >
+            <path d="M0 0L10 5L0 10z" fill="var(--accent)" />
+          </marker>
           <pattern
             id="contour-grid"
             width="85"
@@ -254,6 +323,65 @@ export function GeometryView(props: SceneProps) {
           <text x="20" y="30" className="plot-note">
             Schematic contours; use numbers for exact energies.
           </text>
+        )}
+        {slice && (
+          <g data-testid="projected-surface-slice">
+            <line
+              x1={slice.from[0]}
+              y1={slice.from[1]}
+              x2={slice.to[0]}
+              y2={slice.to[1]}
+              stroke={props.highlight === "x-slice" ? "#80d8cd" : "#cbb5eb"}
+              strokeWidth="4"
+              strokeDasharray="8 5"
+            />
+            <text x="25" y="390" className="basis-label">
+              {slice.label} · xy-plane projection; heights are in the table.
+            </text>
+          </g>
+        )}
+        {props.highlight === "gradient" &&
+          (() => {
+            const g = gradient(props.surface, props.point),
+              end = to([
+                props.point[0] - 0.4 * g[0],
+                props.point[1] - 0.4 * g[1],
+              ]);
+            return (
+              <g>
+                <line
+                  x1={p[0]}
+                  y1={p[1]}
+                  x2={end[0]}
+                  y2={end[1]}
+                  stroke="var(--accent)"
+                  strokeWidth="4"
+                  markerEnd={
+                    Math.hypot(...g) > 1e-10
+                      ? `url(#${markerId}-gradient)`
+                      : undefined
+                  }
+                />
+                <text x="25" y="390" className="basis-label">
+                  −0.4∇E in the parameter xy plane; scaled descent direction.
+                </text>
+              </g>
+            );
+          })()}
+        {props.highlight === "origin" && (
+          <g>
+            <circle
+              cx="320"
+              cy="205"
+              r="13"
+              fill="none"
+              stroke="#f2c994"
+              strokeWidth="3"
+            />
+            <text x="330" y="230" className="basis-label">
+              origin: E(0,0)={energy(props.surface, [0, 0]).toFixed(3)}
+            </text>
+          </g>
         )}
         <path
           d={props.path

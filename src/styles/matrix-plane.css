@@ -1,0 +1,168 @@
+.matrix-plane-scene {
+  --plane-first: var(--accent);
+  --plane-second: #80d8cd;
+  --plane-input: #cbb5eb;
+  --plane-output: var(--text);
+  margin: 0;
+  color: var(--text);
+}
+[data-theme="light"] .matrix-plane-scene {
+  --plane-second: #116e72;
+  --plane-input: #76518e;
+}
+.matrix-plane-scene svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+}
+.matrix-plane-scene svg text {
+  fill: var(--text);
+  font:
+    600 16px ui-sans-serif,
+    system-ui,
+    sans-serif;
+}
+.matrix-plane-grid line {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+.matrix-plane-grid .matrix-plane-axis {
+  stroke: var(--muted);
+  stroke-width: 1.5;
+}
+.matrix-plane-grid text {
+  fill: var(--muted);
+}
+.matrix-plane-grid .matrix-plane-axis-name {
+  fill: var(--text);
+  font-size: 20px;
+}
+.matrix-plane-original {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 2;
+  stroke-dasharray: 7 5;
+}
+.matrix-plane-image {
+  fill: var(--plane-first);
+  fill-opacity: 0.12;
+  stroke: var(--plane-first);
+  stroke-width: 2;
+}
+.matrix-plane-image[data-emphasis="true"] {
+  fill-opacity: 0.27;
+  stroke-width: 4;
+}
+.matrix-plane-image[data-collapsed="true"] {
+  fill: none;
+  stroke-width: 4;
+}
+.matrix-plane-arrow line {
+  stroke-width: 3;
+}
+.matrix-plane-arrow.matrix-plane-first line {
+  stroke: var(--plane-first);
+}
+.matrix-plane-arrow.matrix-plane-second line {
+  stroke: var(--plane-second);
+}
+.matrix-plane-arrow.matrix-plane-input line {
+  stroke: var(--plane-input);
+  stroke-dasharray: 6 4;
+  stroke-width: 2;
+}
+.matrix-plane-arrow.matrix-plane-output line {
+  stroke: var(--plane-output);
+  stroke-width: 2.5;
+}
+.matrix-plane-scene path.matrix-plane-first {
+  fill: var(--plane-first);
+}
+.matrix-plane-scene path.matrix-plane-second {
+  fill: var(--plane-second);
+}
+.matrix-plane-scene path.matrix-plane-input {
+  fill: var(--plane-input);
+}
+.matrix-plane-scene path.matrix-plane-output {
+  fill: var(--plane-output);
+}
+.matrix-plane-scene [data-columns="true"] line {
+  stroke-width: 5;
+}
+.matrix-plane-tip {
+  stroke: var(--panel);
+  stroke-width: 2;
+  fill: var(--plane-first);
+}
+.matrix-plane-tip.column-1 {
+  fill: var(--plane-second);
+}
+.matrix-plane-hit {
+  fill: transparent;
+  stroke: transparent;
+  pointer-events: all;
+  cursor: grab;
+  touch-action: none;
+}
+.matrix-plane-hit:active {
+  cursor: grabbing;
+}
+.matrix-plane-legend {
+  display: flex;
+  gap: 8px 16px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  color: var(--muted);
+  margin: 12px 2px 0;
+}
+.matrix-plane-legend span::before {
+  content: "";
+  display: inline-block;
+  vertical-align: middle;
+  width: 16px;
+  border-top: 3px solid var(--plane-first);
+  margin-right: 7px;
+}
+.matrix-plane-legend .original::before {
+  border-color: var(--muted);
+  border-top-style: dashed;
+}
+.matrix-plane-legend .input::before {
+  border-color: var(--plane-input);
+  border-top-style: dashed;
+}
+.matrix-plane-legend .output::before {
+  border-color: var(--plane-output);
+}
+.matrix-plane-scene figcaption,
+.matrix-plane-dimension-note,
+.matrix-plane-status {
+  margin: 11px 2px 0;
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--muted);
+}
+.matrix-plane-status {
+  color: var(--text);
+  min-height: 2em;
+}
+@media (max-width: 600px) {
+  .matrix-plane-scene svg text {
+    font-size: 27px;
+  }
+  .matrix-plane-grid .matrix-plane-axis-name {
+    font-size: 29px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .matrix-plane-scene *,
+  .matrix-plane-scene *::before {
+    transition: none !important;
+    animation: none !important;
+  }
+}

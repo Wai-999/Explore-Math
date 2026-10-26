@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from "react";
+import { version as releaseVersion } from "../../package.json";
 import { Icon, type icons } from "../components/Icon";
 import { SceneFrame } from "../engine/SceneFrame";
 import { rotation } from "../math/linear";
@@ -6,17 +7,21 @@ import { Range } from "../components/Controls";
 import {
   loadLearning,
   parseLearning,
-  STORAGE_KEY,
+  persistLearning,
+  originalLearningBackup,
   type Learning,
 } from "../persistence/storage";
-import { LearningContext } from "./LearningContext";
+import { LearningContext, useLearning } from "./LearningContext";
 import { applicationCards, sources } from "../content/lessons";
 import type { ApplicationId } from "../worlds/Applications";
+import "../styles/projects.css";
 const ApplicationIndex = lazy(() =>
   import("../worlds/Applications").then((m) => ({
     default: m.ApplicationIndex,
   })),
 );
+const ProjectBuilder = lazy(() => import("../projects/ProjectBuilder"));
+const JourneySummary = lazy(() => import("../education/JourneySummary"));
 const PredictionStudio = lazy(() => import("../prediction/PredictionStudio"));
 const StudioEntry = lazy(() =>
   import("../prediction/StudioLinks").then((m) => ({ default: m.StudioEntry })),
@@ -88,6 +93,10 @@ function WorldArt({ type }: { type: "linear" | "calculus" }) {
   );
 }
 function Discover({ solved }: { solved: number }) {
+  const { learning, update } = useLearning();
+  const recent = Object.values(learning.journeys)
+    .filter((s) => !!s)
+    .sort((a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt))[0];
   const [turn, setTurn] = useState(25),
     [readiness, setReadiness] = useState(false),
     [answer, setAnswer] = useState("");
@@ -119,13 +128,56 @@ function Discover({ solved }: { solved: number }) {
             <br className="desktop-break" /> moment when mathematics finally
             clicks.
           </p>
-          <a className="primary" href="#/explore/linear">
-            Enter the math world <Icon name="ArrowUpRight" size={19} />
+          <a className="primary" href="#/explore/linear/vectors">
+            Start with vectors <Icon name="ArrowUpRight" size={19} />
           </a>
           <div className="hero-footnote">
-            <span className="tiny-dot" /> No lectures to sit through. Just ideas
-            to play with.
+            <span className="tiny-dot" /> Explore an idea, explain why, then
+            build with it.
           </div>
+          {recent && (
+            <a
+              className="text-button"
+              href={`#/explore/${["vectors", "matrices"].includes(recent.id) ? "linear" : "calculus"}/${recent.id}`}
+            >
+              Continue your {recent.id} journey →
+            </a>
+          )}
+          <details className="entry-preferences">
+            <summary>Choose a starting point (optional)</summary>
+            <div className="preset-row">
+              {[
+                {
+                  label: "I’m new to math",
+                  href: "#/explore/linear/vectors",
+                  depth: "intuition" as const,
+                },
+                {
+                  label: "I know some algebra",
+                  href: "#/explore/linear/matrices",
+                  depth: "foundations" as const,
+                },
+                {
+                  label: "I want advanced topics",
+                  href: "#/explore/calculus/gradients",
+                  depth: "research" as const,
+                },
+              ].map((choice) => (
+                <a
+                  className="text-button"
+                  key={choice.label}
+                  href={choice.href}
+                  onClick={() => update({ ...learning, depth: choice.depth })}
+                >
+                  {choice.label} →
+                </a>
+              ))}
+            </div>
+            <p className="caption">
+              A suggested route and view preference, not a placement assessment.
+              All paths remain open.
+            </p>
+          </details>
         </div>
         <div className="hero-stage">
           <SceneFrame
@@ -281,7 +333,7 @@ function Discover({ solved }: { solved: number }) {
               {answer === "(0, 1)"
                 ? "Yes. Try the satellite mission in Transform space."
                 : "Start in Transform space: compare the identity with a 90° rotation. You can learn the coordinates as you go."}{" "}
-              <a href="#/explore/linear">Start with vectors →</a>
+              <a href="#/explore/linear/vectors">Start with vectors →</a>
             </p>
           )}
           <p className="caption">
@@ -384,6 +436,18 @@ function MyLearning({
           pressure.
         </p>
       </div>
+      <section
+        className="learning-card"
+        aria-labelledby="preview-release-title"
+      >
+        <h2 id="preview-release-title">Learning preview · {releaseVersion}</h2>
+        <p>
+          Explore the tested lessons and projects while independent human
+          mathematics and beginner-usability reviews remain pending. Automated
+          checks do not establish educational effectiveness.
+        </p>
+      </section>
+      <JourneySummary />
       <div className="learning-grid">
         <section className="learning-card">
           <Icon name="Trophy" size={25} />
@@ -467,11 +531,14 @@ function MyLearning({
           >
             {["intuition", "foundations", "advanced", "research"].map((x) => (
               <option key={x} value={x}>
-                {x === "advanced"
-                  ? "Professional practice"
-                  : x === "research"
-                    ? "Research connections"
-                    : x}
+                {
+                  {
+                    intuition: "New",
+                    foundations: "Building",
+                    advanced: "Deep",
+                    research: "Rigorous",
+                  }[x as Learning["depth"]]
+                }
               </option>
             ))}
           </select>
@@ -521,12 +588,44 @@ function MyLearning({
               />
             </label>
           </div>
+          <button
+            className="text-button"
+            onClick={() => {
+              try {
+                const raw = originalLearningBackup();
+                if (!raw) {
+                  setMessage(
+                    "No earlier raw browser record is available on this device.",
+                  );
+                  return;
+                }
+                const url = URL.createObjectURL(
+                  new Blob([raw], { type: "application/json" }),
+                );
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = "math-world-original-saved-data.json";
+                link.click();
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+                setMessage(
+                  "Original saved bytes downloaded without normalization.",
+                );
+              } catch {
+                setMessage(
+                  "Browser storage is unavailable; the original record could not be read.",
+                );
+              }
+            }}
+          >
+            Download original saved data
+          </button>
           <p role="status">{message || notice}</p>
           <p className="caption">
-            Schema v2: theme, depth, bookmarks, solution evidence, prediction
-            experiments, and decision journals. Version 1 backups migrate
-            without deleting the original browser key. Browser storage may be
-            cleared by private mode or device settings.
+            Schema v2: theme, depth, bookmarks, solution evidence, guided
+            concept journeys, saved projects, prediction experiments, and
+            decision journals. Version 1 backups migrate without deleting the
+            original browser key. Browser storage may be cleared by private mode
+            or device settings.
           </p>
         </section>
         <section className="learning-card">
@@ -556,6 +655,41 @@ function MyLearning({
           </p>
         </section>
       </div>
+      <section className="learning-card">
+        <h2>Projects you can rebuild</h2>
+        <p>
+          Saved parameter states, predictions, observations, and reasoning
+          self-checks. A numeric goal is evidence for that attempt only.
+        </p>
+        <a className="text-button" href="#/applications/builder">
+          Create a new project →
+        </a>
+        {learning.projects.length === 0 ? (
+          <p>No projects saved yet.</p>
+        ) : (
+          <ul className="evidence-list">
+            {learning.projects.map((p) => (
+              <li key={p.id}>
+                <span>
+                  <a href={`#/applications/builder/${p.template}/${p.id}`}>
+                    {p.title} →
+                  </a>
+                  <small>
+                    {p.evidence.attempts} numeric checks ·{" "}
+                    {p.evidence.hintUsed
+                      ? "guided record"
+                      : "no solution revealed in this draft"}{" "}
+                    ·{" "}
+                    {p.evidence.selfChecked
+                      ? "learner self-checked"
+                      : "reasoning not reviewed"}
+                  </small>
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
       <section className="learning-card studio-progress">
         <h2>Prediction practice, over time</h2>
         <p>
@@ -603,7 +737,7 @@ function MyLearning({
   );
 }
 export default function App() {
-  const [route, sub] = useRoute(),
+  const [route, sub, detail, projectId] = useRoute(),
     [initial] = useState(loadLearning),
     [learning, setLearning] = useState(initial.data),
     [notice, setNotice] = useState(initial.notice),
@@ -630,7 +764,7 @@ export default function App() {
   useEffect(() => {
     if (!storageAllowed) return;
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(learning));
+      persistLearning(learning);
     } catch {
       queueMicrotask(() =>
         setNotice(
@@ -646,7 +780,7 @@ export default function App() {
   }, []);
   useEffect(() => {
     document.getElementById("main-content")?.focus({ preventScroll: true });
-  }, [route, sub]);
+  }, [route, sub, detail, projectId]);
   function record(id: string, seed: number, passed: boolean) {
     setStorageAllowed(true);
     setLearning((prev) => {
@@ -749,7 +883,13 @@ export default function App() {
               <Icon name={menu ? "X" : "Menu"} />
             </button>
             <div className="breadcrumb">
-              <span>THE STUDIO</span>
+              <a
+                className="preview-label"
+                href="#/learning"
+                aria-label="Preview release details"
+              >
+                PREVIEW
+              </a>
               <Icon name="ChevronRight" size={14} />
               <strong>
                 {destinations.find((d) => d.id === active)?.label}
@@ -807,14 +947,26 @@ export default function App() {
                 sub === "prediction" ? (
                   <PredictionStudio />
                 ) : sub === "calculus" ? (
-                  <CalculusWorld />
+                  <CalculusWorld concept={detail} />
                 ) : (
-                  <LinearWorld />
+                  <LinearWorld concept={detail} />
                 )
               ) : active === "challenges" ? (
                 <Challenges />
               ) : active === "applications" ? (
-                ["robot", "business", "regression"].includes(sub) ? (
+                sub === "builder" ? (
+                  <ProjectBuilder
+                    key={`${detail || "vector-navigation"}:${projectId || "new"}`}
+                    projects={learning.projects}
+                    onChange={(projects) => update({ ...learning, projects })}
+                    initialTemplate={
+                      detail === "quadratic-cost"
+                        ? "quadratic-cost"
+                        : "vector-navigation"
+                    }
+                    initialProjectId={projectId}
+                  />
+                ) : ["robot", "business", "regression"].includes(sub) ? (
                   <ApplicationMission key={sub} id={sub as ApplicationId} />
                 ) : (
                   <ApplicationIndex />
