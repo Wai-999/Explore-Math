@@ -2,6 +2,8 @@
 
 October 26, 2026. **Review candidate, not deployed.** Version 0.3.0-rc.1 on `feat/deep-explore-learning-v2`, based on `89e8c998c261949e2be5d253bd815aef8640110a` (`feature/prediction-studio`). The original checkout was clean. No unrelated work or old learner keys were removed.
 
+**PR READY:** [V2 PR #2](https://github.com/Wai-999/Explore-Math/pull/2), targeting the preserved `feature/prediction-studio` branch. Two logical implementation/evidence commits are `a6beb27` and `608d341`; this report adds review metadata afterward. [Current PR checks](https://github.com/Wai-999/Explore-Math/pull/2/checks) are the authoritative CI state for the displayed PR head. Exact final head and completed run are reported in the execution handoff.
+
 The public [GitHub Pages site](https://wai-999.github.io/Explore-Math/) remains v0.1. The before-audit records actual live behavior and the last verified Pages source/workflow. V2 production-bundle checks are local checks of `/Explore-Math/`; they are not a deployed-V2 claim. Branch push/PR CI does not publish Pages. Exact candidate commit, PR and CI links are recorded in the PR and final execution report.
 
 ## Delivered for review
