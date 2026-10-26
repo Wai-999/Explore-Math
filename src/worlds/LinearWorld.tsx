@@ -1,5 +1,5 @@
 import { Formula } from "../components/Formula";
-import { useMemo, useState } from "react";
+import { lazy, useMemo, useState } from "react";
 import {
   IDENTITY,
   fmt,
@@ -15,7 +15,7 @@ import { Icon } from "../components/Icon";
 import { useLearning } from "../app/LearningContext";
 import { lessons } from "../content/lessons";
 import { LessonExplanation } from "./Shared";
-export default function LinearWorld() {
+function LinearSandbox() {
   const [matrix, setMatrix] = useState<Mat3>([1, 0.55, 0, 0, 1, 0, 0, 0, 1]),
     [angle, setAngle] = useState(0),
     [prediction, setPrediction] = useState(""),
@@ -64,6 +64,17 @@ export default function LinearWorld() {
           <Icon name="RotateCcw" size={16} /> Reset experiment
         </button>
       </div>
+      <nav
+        className="preset-row guided-entry-links"
+        aria-label="Guided linear paths"
+      >
+        <a className="secondary" href="#/explore/linear/vectors">
+          Start with vectors & projection →
+        </a>
+        <a className="text-button" href="#/explore/linear/matrices">
+          Understand matrices & determinant →
+        </a>
+      </nav>
       <div className="lab-layout">
         <section className="lab-main">
           <SceneFrame
@@ -282,4 +293,11 @@ export default function LinearWorld() {
       </section>
     </>
   );
+}
+
+const ConceptJourney = lazy(() => import("../education/ConceptJourney"));
+export default function LinearWorld({ concept }: { concept?: string }) {
+  if (concept === "vectors" || concept === "matrices")
+    return <ConceptJourney key={concept} id={concept} />;
+  return <LinearSandbox />;
 }

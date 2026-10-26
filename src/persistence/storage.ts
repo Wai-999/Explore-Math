@@ -1,3 +1,6 @@
+import { validProjectCollection, type ProjectSpec } from "../projects/schema";
+import { validJourney, type JourneySession } from "../education/session";
+import { conceptIds, type ConceptId } from "../education/model";
 import type { ChallengeEvidence } from "../assessment/challenges";
 import {
   validSession,
@@ -15,6 +18,8 @@ export interface Learning {
   attempts: Record<string, number>;
   studio: Partial<Record<ProjectId, StudioSession>>;
   studioHistory: StudioHistory[];
+  journeys: Partial<Record<ConceptId, JourneySession>>;
+  projects: ProjectSpec[];
 }
 export const INITIAL: Learning = {
   version: 2,
@@ -25,10 +30,13 @@ export const INITIAL: Learning = {
   attempts: {},
   studio: {},
   studioHistory: [],
+  journeys: {},
+  projects: [],
 };
 export const STORAGE_KEY = "math-world-3d:v2";
 export function parseLearning(text: string): Learning {
-  if (text.length > 5000000) throw Error("Backup is too large (maximum 5 MB).");
+  if (new TextEncoder().encode(text).byteLength > 5000000)
+    throw Error("Backup is too large (maximum 5 MB).");
   const v = JSON.parse(text);
   if (
     ![1, 2].includes(v?.version) ||
@@ -88,6 +96,20 @@ export function parseLearning(text: string): Learning {
       ))
   )
     throw Error("Invalid prediction-studio session or experiment history.");
+  if (
+    v.journeys !== undefined &&
+    (!v.journeys ||
+      typeof v.journeys !== "object" ||
+      Array.isArray(v.journeys) ||
+      Object.entries(v.journeys).some(
+        ([id, value]) =>
+          !conceptIds.includes(id as ConceptId) ||
+          !validJourney(value, id as ConceptId),
+      ))
+  )
+    throw Error("Invalid guided-learning record.");
+  if (v.projects !== undefined && !validProjectCollection(v.projects))
+    throw Error("Invalid saved project collection.");
   return {
     version: 2,
     theme: v.theme,
@@ -97,6 +119,8 @@ export function parseLearning(text: string): Learning {
     attempts: v.attempts,
     studio: v.version === 2 ? v.studio : {},
     studioHistory: v.version === 2 ? v.studioHistory : [],
+    journeys: v.journeys || {},
+    projects: v.projects || [],
   };
 }
 export function loadLearning(): { data: Learning; notice: string } {
@@ -112,4 +136,42 @@ export function loadLearning(): { data: Learning; notice: string } {
         "Your saved data could not be read. A fresh session is ready; the original data has not been overwritten.",
     };
   }
+}
+
+export const PRE_UPGRADE_KEY = "math-world-3d:before-guided-upgrade";
+export const RECOVERY_KEY = "math-world-3d:protected-unreadable-data";
+/** Backup-before-write is required: a failed backup must not overwrite the old key. */
+export function persistLearning(data: Learning) {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (raw) {
+    let unreadable = false,
+      legacy = false;
+    try {
+      const old = JSON.parse(raw);
+      parseLearning(raw);
+      legacy = old.journeys === undefined || old.projects === undefined;
+    } catch {
+      unreadable = true;
+    }
+    if (unreadable) localStorage.setItem(RECOVERY_KEY, raw);
+    else if (legacy && !localStorage.getItem(PRE_UPGRADE_KEY))
+      localStorage.setItem(PRE_UPGRADE_KEY, raw);
+  }
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+export function originalLearningBackup() {
+  const current = localStorage.getItem(STORAGE_KEY);
+  if (current) {
+    try {
+      parseLearning(current);
+    } catch {
+      return current;
+    }
+  }
+  return (
+    localStorage.getItem(RECOVERY_KEY) ||
+    localStorage.getItem(PRE_UPGRADE_KEY) ||
+    localStorage.getItem("math-world-3d:v1") ||
+    localStorage.getItem(STORAGE_KEY)
+  );
 }

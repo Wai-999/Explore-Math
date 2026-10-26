@@ -1,5 +1,5 @@
 import { Formula } from "../components/Formula";
-import { useMemo, useState } from "react";
+import { lazy, useMemo, useState } from "react";
 import {
   calculusModel,
   descent,
@@ -19,7 +19,7 @@ import { Icon } from "../components/Icon";
 import { useLearning } from "../app/LearningContext";
 import { LessonExplanation } from "./Shared";
 import { lessons } from "../content/lessons";
-export default function CalculusWorld() {
+function CalculusSandbox() {
   const [mode, setMode] = useState<"surface" | "curve">("surface"),
     [surface, setSurface] = useState<SurfaceKind>("bowl"),
     [point, setPoint] = useState<Point2>([1.6, 1.1]),
@@ -101,6 +101,17 @@ export default function CalculusWorld() {
           <Icon name="RotateCcw" size={16} /> Reset experiment
         </button>
       </div>
+      <nav
+        className="preset-row guided-entry-links"
+        aria-label="Guided calculus paths"
+      >
+        <a className="secondary" href="#/explore/calculus/derivatives">
+          Start with limits & derivatives →
+        </a>
+        <a className="text-button" href="#/explore/calculus/gradients">
+          Understand gradients & optimization →
+        </a>
+      </nav>
       <div className="segmented mode-switch">
         <button
           className={mode === "surface" ? "active" : ""}
@@ -378,4 +389,11 @@ export default function CalculusWorld() {
       </section>
     </>
   );
+}
+
+const ConceptJourney = lazy(() => import("../education/ConceptJourney"));
+export default function CalculusWorld({ concept }: { concept?: string }) {
+  if (concept === "derivatives" || concept === "gradients")
+    return <ConceptJourney key={concept} id={concept} />;
+  return <CalculusSandbox />;
 }

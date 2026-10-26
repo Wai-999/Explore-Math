@@ -31,6 +31,57 @@ export function ApplicationIndex() {
           powerful ideas.
         </p>
       </div>
+      <section
+        className="project-sector-bridge"
+        aria-labelledby="project-sector-title"
+      >
+        <span className="eyebrow">LEARN A RULE, THEN BUILD WITH IT</span>
+        <h2 id="project-sector-title">Two decisions you can make your own.</h2>
+        <div className="learning-grid">
+          <article className="learning-card">
+            <span className="eyebrow">ROBOTICS / VECTOR NAVIGATION</span>
+            <h3>Counter the wind.</h3>
+            <p>
+              Choose a fixed-frame control displacement so a drone reaches its
+              destination. Follow the component equation, check position error
+              in meters, and save a new scenario. This is displacement
+              bookkeeping, not a flight-dynamics model.
+            </p>
+            <a
+              className="secondary"
+              href="#/applications/builder/vector-navigation"
+            >
+              Build a vector navigation project →
+            </a>
+            <p>
+              <a className="text-button" href="#/explore/linear/vectors">
+                Learn vector addition & projection first →
+              </a>
+            </p>
+          </article>
+          <article className="learning-card">
+            <span className="eyebrow">BUSINESS / CONVEX OPERATING COST</span>
+            <h3>Compare a decision with its boundaries.</h3>
+            <p>
+              Choose a production quantity on a synthetic quadratic cost curve.
+              Derive the marginal rate, test stationary and boundary candidates,
+              and report the assumptions. Demand, revenue, and operational
+              uncertainty are omitted.
+            </p>
+            <a
+              className="secondary"
+              href="#/applications/builder/quadratic-cost"
+            >
+              Build a business cost project →
+            </a>
+            <p>
+              <a className="text-button" href="#/explore/calculus/derivatives">
+                Learn derivatives first →
+              </a>
+            </p>
+          </article>
+        </div>
+      </section>
       <StudioEntry />
       <div className="filter-row">
         <label>
@@ -90,7 +141,10 @@ export function ApplicationIndex() {
         <p>No missions match these filters. Try another subject or level.</p>
       )}
       <p className="quiet-note">
-        Three complete, local simulations. All data and models are illustrative.
+        Three existing mission simulations, two project templates, and the
+        prediction-studio companions. All models and synthetic data are
+        illustrative; the documented historical-data notebook is a separate
+        study.
       </p>
     </>
   );

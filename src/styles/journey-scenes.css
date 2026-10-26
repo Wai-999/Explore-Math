@@ -1,0 +1,223 @@
+.journey-scene {
+  --scene-u: var(--accent);
+  --scene-w: #80d8cd;
+  --scene-residual: #cbb5eb;
+  --scene-warn: #f2c994;
+  margin: 0;
+  color: var(--text);
+}
+[data-theme="light"] .journey-scene {
+  --scene-w: #116e72;
+  --scene-residual: #76518e;
+  --scene-warn: #8b5615;
+}
+.journey-scene svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.journey-scene svg text {
+  fill: var(--text);
+  font:
+    13px ui-sans-serif,
+    system-ui,
+    sans-serif;
+}
+.journey-grid line {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+.journey-grid .journey-axis {
+  stroke: var(--muted);
+  stroke-width: 1.5;
+}
+.journey-grid text {
+  fill: var(--muted);
+}
+.journey-vector line {
+  stroke-width: 3;
+}
+.journey-vector.vector-u line {
+  stroke: var(--scene-u);
+}
+.journey-vector.vector-w line {
+  stroke: var(--scene-w);
+}
+.journey-vector.vector-projection line {
+  stroke: var(--scene-u);
+  stroke-width: 5;
+}
+.journey-vector.vector-residual line {
+  stroke: var(--scene-residual);
+  stroke-dasharray: 6 4;
+}
+.journey-vector.vector-total line {
+  stroke: var(--muted);
+  stroke-width: 2;
+  stroke-dasharray: 3 5;
+}
+.journey-scene path.vector-u {
+  fill: var(--scene-u);
+}
+.journey-scene path.vector-w {
+  fill: var(--scene-w);
+}
+.journey-scene path.vector-residual {
+  fill: var(--scene-residual);
+}
+.journey-scene path.vector-total {
+  fill: var(--muted);
+}
+.journey-vector[data-active="true"] line,
+.journey-function[data-active="true"],
+.journey-tangent[data-active="true"],
+.journey-secant[data-active="true"] {
+  stroke-width: 5;
+}
+.journey-point-label {
+  font-weight: 650 !important;
+}
+.journey-start {
+  fill: var(--text);
+}
+.journey-target {
+  fill: none;
+  stroke: var(--scene-w);
+  stroke-width: 2;
+}
+.journey-target-cross {
+  fill: none;
+  stroke: var(--scene-w);
+  stroke-width: 1.5;
+}
+.journey-handle-visual {
+  stroke: var(--panel);
+  stroke-width: 2;
+}
+.journey-handle-visual.vector-u {
+  fill: var(--scene-u);
+}
+.journey-handle-visual.vector-w {
+  fill: var(--scene-w);
+}
+.journey-handle-hit {
+  fill: transparent;
+  stroke: transparent;
+  stroke-width: 34;
+  pointer-events: all;
+  cursor: grab;
+  touch-action: none;
+}
+.journey-handle-hit:active {
+  cursor: grabbing;
+}
+.journey-scene figcaption {
+  padding: 13px 3px 0;
+  font-size: 12px;
+  line-height: 1.85;
+  color: var(--muted);
+}
+.journey-scene-status {
+  margin: 10px 3px 0;
+  min-height: 2em;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text);
+}
+.journey-delta-band {
+  fill: var(--scene-w);
+  opacity: 0.1;
+}
+.journey-epsilon-band {
+  fill: var(--scene-residual);
+  opacity: 0.1;
+}
+.journey-limit-bands line {
+  stroke: var(--scene-w);
+  stroke-width: 1.25;
+  stroke-dasharray: 4 4;
+}
+.journey-limit-bands[data-active="true"] line {
+  stroke-width: 2;
+}
+.journey-limit-bands text {
+  font-size: 12px !important;
+  fill: var(--muted) !important;
+}
+.journey-function {
+  fill: none;
+  stroke: var(--scene-u);
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
+.journey-tangent {
+  stroke: var(--scene-residual);
+  stroke-width: 3;
+}
+.journey-secant {
+  stroke: var(--scene-w);
+  stroke-width: 3;
+  stroke-dasharray: 7 4;
+}
+.journey-base-point,
+.journey-filled-point {
+  fill: var(--scene-u);
+  stroke: var(--panel);
+  stroke-width: 2;
+}
+.journey-open-point {
+  fill: var(--panel);
+  stroke: var(--scene-u);
+  stroke-width: 2;
+}
+.journey-approach-point {
+  fill: var(--scene-w);
+  stroke: var(--panel);
+  stroke-width: 2;
+}
+.journey-approach-point[data-inside-delta="false"] {
+  fill: var(--scene-warn);
+}
+.journey-scene-legend {
+  display: flex;
+  gap: 10px 18px;
+  flex-wrap: wrap;
+  margin: 12px 3px 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+.journey-scene-legend span::before {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  margin-right: 7px;
+  vertical-align: middle;
+  border-top: 3px solid var(--scene-u);
+}
+.journey-scene-legend .legend-secant::before {
+  border-color: var(--scene-w);
+  border-top-style: dashed;
+}
+.journey-scene-legend .legend-tangent::before {
+  border-color: var(--scene-residual);
+}
+@media (prefers-reduced-motion: reduce) {
+  .journey-scene *,
+  .journey-scene *::before {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .journey-scene svg text {
+    font-size: 27px;
+  }
+  .journey-limit-bands text {
+    display: none;
+  }
+}

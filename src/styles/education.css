@@ -1,0 +1,438 @@
+.concept-journey {
+  max-width: 1320px;
+  margin: 0 auto;
+}
+.journey-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 40px 0 28px;
+}
+.journey-heading h1 {
+  font-size: clamp(30px, 3.5vw, 46px);
+  letter-spacing: -0.045em;
+  line-height: 1.12;
+  margin: 14px 0;
+}
+.journey-heading p {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.8;
+  max-width: 610px;
+}
+.journey-heading > .secondary {
+  flex-shrink: 0;
+  margin-top: 18px;
+}
+.journey-preferences {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 0 0 22px;
+}
+.journey-preferences label {
+  font-size: 11px;
+  color: var(--muted);
+  display: grid;
+  gap: 8px;
+  min-width: 180px;
+}
+.concept-journey select,
+.concept-journey input[type="number"],
+.concept-journey textarea {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--input);
+  color: var(--text);
+  padding: 11px 12px;
+  font: inherit;
+  font-size: 13px;
+  max-width: 100%;
+  min-height: 44px;
+}
+.concept-journey textarea {
+  display: block;
+  width: 100%;
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.7;
+  margin: 10px 0 20px;
+}
+.journey-guide {
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin: 0 0 24px;
+  background: var(--panel);
+}
+.journey-guide p {
+  max-width: 850px;
+  line-height: 1.8;
+  font-size: 13px;
+}
+.journey-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 16px 0;
+}
+.journey-lenses {
+  display: flex;
+  gap: 6px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+.journey-lenses button {
+  flex: 1;
+  min-height: 58px;
+  text-align: left;
+  padding: 14px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.5;
+  cursor: pointer;
+}
+.journey-lenses button[aria-pressed="true"] {
+  color: var(--text);
+  border-color: var(--accent);
+  background: var(--panel);
+}
+.journey-lenses span {
+  display: inline-block;
+  margin-right: 10px;
+  font-size: 10px;
+  color: var(--faint);
+}
+.journey-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(330px, 0.85fr);
+  gap: 24px;
+  align-items: start;
+}
+.journey-stage,
+.journey-card {
+  min-width: 0;
+}
+.journey-stage > .metrics {
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+}
+.journey-stage > .formula {
+  overflow-x: auto;
+}
+.journey-stage .scene-frame {
+  margin-bottom: 16px;
+}
+.journey-interpretation {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--text);
+  border-left: 2px solid var(--accent);
+  padding: 4px 0 4px 15px;
+}
+.journey-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 28px;
+}
+.journey-card h2 {
+  font-size: 24px;
+  letter-spacing: -0.025em;
+  line-height: 1.4;
+  margin: 14px 0 20px;
+}
+.journey-card h3 {
+  font-size: 17px;
+  line-height: 1.5;
+  margin-top: 24px;
+}
+.concept-journey p,
+.concept-journey li {
+  line-height: 1.85;
+}
+.journey-card p,
+.journey-card li {
+  font-size: 13px;
+}
+.journey-card label,
+.journey-notebook label {
+  display: block;
+  font-size: 12px;
+  line-height: 1.8;
+}
+.journey-card label > input[type="number"] {
+  display: block;
+  width: 100%;
+  margin: 8px 0 16px;
+}
+.journey-controls {
+  padding: 20px 0;
+  border-top: 1px solid var(--border);
+  margin-top: 22px;
+}
+.journey-controls h2 {
+  font-size: 17px;
+  margin: 0 0 18px;
+}
+.journey-controls > label {
+  font-size: 12px;
+  display: grid;
+  gap: 8px;
+  max-width: 380px;
+}
+.journey-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 18px 0;
+}
+.journey-number {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  font-size: 12px;
+}
+.journey-number small {
+  font-size: 10px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.concept-journey [aria-invalid="true"] {
+  border-color: #d29578;
+}
+.journey-card fieldset {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px;
+  margin: 20px 0;
+}
+.journey-card legend {
+  font-size: 12px;
+  line-height: 1.6;
+  padding: 0 5px;
+}
+.journey-card .journey-radio {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  min-height: 44px;
+  padding: 8px 0;
+}
+.journey-radio input {
+  margin-top: 5px;
+  flex-shrink: 0;
+  accent-color: var(--accent);
+}
+.concept-journey details {
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+  margin: 22px 0;
+}
+.concept-journey summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.7;
+  padding: 5px 0;
+}
+.concept-journey table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin: 16px 0;
+  overflow-wrap: anywhere;
+}
+.concept-journey th,
+.concept-journey td {
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  padding: 11px 8px;
+  line-height: 1.7;
+  vertical-align: top;
+}
+.concept-journey th {
+  font-weight: 500;
+}
+.concept-journey caption {
+  text-align: left;
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--muted);
+  padding: 8px 0;
+}
+.proof-statement {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  overflow-wrap: anywhere;
+  padding: 18px;
+  background: var(--panel-deep);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px !important;
+  line-height: 1.9;
+}
+.derivation-stepper ol {
+  padding-left: 22px;
+}
+.evidence-kind,
+.step-count {
+  font-size: 10px !important;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+}
+.journey-warning {
+  padding: 14px;
+  border: 1px solid var(--border);
+  background: var(--panel-deep);
+  border-radius: 6px;
+}
+.journey-feedback {
+  font-size: 12px;
+  line-height: 1.8;
+  margin: 20px 0;
+  color: var(--text);
+  min-height: 1px;
+}
+.journey-next {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+  margin-top: 25px;
+}
+.journey-next > span {
+  font-size: 11px;
+  color: var(--muted);
+}
+.journey-notebook,
+.journey-map {
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.journey-map a {
+  display: inline-block;
+  font-size: 12px;
+  margin: 4px 8px 4px 0;
+}
+.journey-records {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+.journey-records > article {
+  min-width: 0;
+  border-top: 1px solid var(--border);
+  padding: 15px 0;
+}
+.journey-records h3 {
+  font-size: 16px;
+  line-height: 1.5;
+}
+.journey-records p,
+.journey-records li {
+  font-size: 12px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+.journey-records ul {
+  padding-left: 15px;
+}
+.journey-summary {
+  margin-bottom: 28px;
+}
+@media (max-width: 1050px) {
+  .journey-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .journey-card {
+    padding: 24px;
+  }
+  .journey-heading {
+    padding-top: 25px;
+  }
+  .journey-preferences {
+    gap: 14px;
+  }
+}
+@media (max-width: 540px) {
+  .journey-heading {
+    flex-direction: column;
+    gap: 3px;
+  }
+  .journey-heading > .secondary {
+    margin-top: 0;
+  }
+  .journey-heading h1 {
+    font-size: 32px;
+  }
+  .journey-lenses {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 3px;
+  }
+  .journey-lenses button {
+    padding: 11px;
+    min-height: 48px;
+  }
+  .journey-preferences {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+  .journey-preferences label {
+    min-width: 0;
+  }
+  .journey-card {
+    padding: 20px;
+  }
+  .journey-card h2 {
+    font-size: 22px;
+  }
+  .journey-fields {
+    gap: 12px;
+  }
+  .journey-number {
+    font-size: 11px;
+  }
+  .journey-guide {
+    padding: 18px;
+  }
+  .journey-notebook,
+  .journey-map {
+    padding: 18px;
+  }
+  .journey-next {
+    align-items: flex-start;
+  }
+  .concept-journey .primary,
+  .concept-journey .secondary {
+    max-width: 100%;
+    white-space: normal;
+    line-height: 1.6;
+  }
+}
+
+/* Instructions precede controls in DOM and mobile reading order. */
+.journey-layout {
+  grid-template-areas: "stage card";
+}
+.journey-stage {
+  grid-area: stage;
+}
+.journey-card {
+  grid-area: card;
+}
+@media (max-width: 1050px) {
+  .journey-layout {
+    grid-template-areas: "card" "stage";
+  }
+}

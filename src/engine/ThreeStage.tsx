@@ -3,12 +3,12 @@ import { Canvas, type ThreeEvent } from "@react-three/fiber";
 import { OrbitControls, Line } from "@react-three/drei";
 import * as THREE from "three";
 import type { SceneProps } from "./GeometryView";
-import { type Mat3, type Vec3 } from "../math/linear";
+import { transform, type Mat3, type Vec3 } from "../math/linear";
 import { energy, gradient, tangentHeight } from "../math/calculus";
 function AxisLabel({ text, position }: { text: string; position: Vec3 }) {
   const texture = useMemo(() => {
     const canvas = document.createElement("canvas");
-    canvas.width = 64;
+    canvas.width = Math.max(64, text.length * 24 + 16);
     canvas.height = 64;
     const ctx = canvas.getContext("2d")!;
     ctx.font = "36px sans-serif";
@@ -16,14 +16,17 @@ function AxisLabel({ text, position }: { text: string; position: Vec3 }) {
     ctx.textBaseline = "middle";
     ctx.strokeStyle = "#152523";
     ctx.lineWidth = 4;
-    ctx.strokeText(text, 32, 32);
+    ctx.strokeText(text, canvas.width / 2, 32);
     ctx.fillStyle = "#d1ddd3";
-    ctx.fillText(text, 32, 32);
+    ctx.fillText(text, canvas.width / 2, 32);
     return new THREE.CanvasTexture(canvas);
   }, [text]);
   useEffect(() => () => texture.dispose(), [texture]);
   return (
-    <sprite position={position} scale={[0.36, 0.36, 1]}>
+    <sprite
+      position={position}
+      scale={[(0.36 * Math.max(64, text.length * 24 + 16)) / 64, 0.36, 1]}
+    >
       <spriteMaterial map={texture} depthTest={false} />
     </sprite>
   );
@@ -32,10 +35,12 @@ function Arrow({
   to,
   color,
   from = [0, 0, 0],
+  emphasis = 1,
 }: {
   to: Vec3;
   color: string;
   from?: Vec3;
+  emphasis?: number;
 }) {
   const d = new THREE.Vector3(...to).sub(new THREE.Vector3(...from));
   const len = d.length();
@@ -46,9 +51,9 @@ function Arrow({
   );
   return (
     <group>
-      <Line points={[from, to]} color={color} lineWidth={2.5} />
+      <Line points={[from, to]} color={color} lineWidth={2.5 * emphasis} />
       <mesh position={to} quaternion={q}>
-        <coneGeometry args={[0.045, 0.14, 12]} />
+        <coneGeometry args={[0.045 * emphasis, 0.14 * emphasis, 12]} />
         <meshBasicMaterial color={color} />
       </mesh>
     </group>
@@ -58,10 +63,12 @@ function TransformScene({
   matrix,
   onMatrix,
   onDrag,
+  highlight,
 }: {
   matrix: Mat3;
   onMatrix?: (m: Mat3) => void;
   onDrag: (v: boolean) => void;
+  highlight?: string;
 }) {
   const [drag, setDrag] = useState<number | null>(null);
   const m = useMemo(
@@ -135,17 +142,31 @@ function TransformScene({
           <meshStandardMaterial
             color="#bce699"
             transparent
-            opacity={0.23}
+            opacity={highlight === "volume" ? 0.42 : 0.23}
             side={THREE.DoubleSide}
             depthWrite={false}
           />
         </mesh>
+        {highlight === "area" && (
+          <mesh position={[0.5, 0.5, 0]}>
+            <planeGeometry args={[1, 1]} />
+            <meshBasicMaterial
+              color="#80d8cd"
+              transparent
+              opacity={0.55}
+              side={THREE.DoubleSide}
+              depthWrite={false}
+            />
+          </mesh>
+        )}
         {edges.map(([a, b], i) => (
           <Line
             key={i}
             points={[points[a], points[b]]}
             color="#c9ed9f"
-            lineWidth={1.8}
+            lineWidth={
+              highlight === "volume" || highlight === "area" ? 3.2 : 1.8
+            }
           />
         ))}
       </group>
@@ -154,7 +175,11 @@ function TransformScene({
           color = ["#d3ee9d", "#83d9cc", "#c5b2eb"][c];
         return (
           <group key={c}>
-            <Arrow to={end} color={color} />
+            <Arrow
+              to={end}
+              color={color}
+              emphasis={highlight === "columns" ? 1.6 : 1}
+            />
             <mesh
               position={end}
               onPointerDown={(e) => {
@@ -197,6 +222,12 @@ function TransformScene({
           </group>
         );
       })}
+      {highlight === "area" && (
+        <AxisLabel
+          text="image of xy face"
+          position={transform(matrix, [0.5, 0.5, 0])}
+        />
+      )}
     </>
   );
 }
@@ -204,6 +235,7 @@ function Surface({
   surface,
   point,
   path,
+  highlight,
 }: Extract<SceneProps, { kind: "calculus" }>) {
   const geometry = useMemo(() => {
     const n = 40,
@@ -249,6 +281,15 @@ function Surface({
   useEffect(() => () => geometry.dispose(), [geometry]);
   useEffect(() => () => tangent.dispose(), [tangent]);
   const g = gradient(surface, point);
+  const slice = useMemo(() => {
+    if (highlight !== "x-slice" && highlight !== "y-slice") return null;
+    return Array.from({ length: 101 }, (_, i) => {
+      const t = -2.5 + i * 0.05;
+      const q: [number, number] =
+        highlight === "x-slice" ? [t, point[1]] : [point[0], t];
+      return [q[0], q[1], energy(surface, q)] as Vec3;
+    });
+  }, [highlight, surface, point]);
   return (
     <>
       <mesh geometry={geometry}>
@@ -276,6 +317,36 @@ function Surface({
           opacity={0.4}
         />
       </mesh>
+      {slice && (
+        <>
+          <Line
+            points={slice}
+            color={highlight === "x-slice" ? "#80d8cd" : "#cbb5eb"}
+            lineWidth={4}
+            depthTest={false}
+          />
+          <AxisLabel
+            text={
+              highlight === "x-slice"
+                ? `x slice; y=${point[1].toFixed(2)}`
+                : `y slice; x=${point[0].toFixed(2)}`
+            }
+            position={slice[80]}
+          />
+        </>
+      )}
+      {highlight === "origin" && (
+        <>
+          <mesh position={[0, 0, energy(surface, [0, 0])]}>
+            <sphereGeometry args={[0.13, 16, 12]} />
+            <meshBasicMaterial color="#f2c994" />
+          </mesh>
+          <AxisLabel
+            text="origin (0,0)"
+            position={[0, 0, energy(surface, [0, 0]) + 0.35]}
+          />
+        </>
+      )}
       <mesh position={[point[0], point[1], energy(surface, point) + 0.06]}>
         <sphereGeometry args={[0.1, 16, 12]} />
         <meshStandardMaterial
@@ -288,7 +359,14 @@ function Surface({
         from={[point[0], point[1], 0.035]}
         to={[point[0] - 0.4 * g[0], point[1] - 0.4 * g[1], 0.035]}
         color="#cbe8a1"
+        emphasis={highlight === "gradient" ? 1.6 : 1}
       />
+      {highlight === "gradient" && (
+        <AxisLabel
+          text="-0.4 grad E (xy)"
+          position={[point[0] - 0.2 * g[0], point[1] - 0.2 * g[1], 0.35]}
+        />
+      )}
       {path.length > 1 && (
         <Line
           points={path.map(
@@ -347,6 +425,7 @@ export default function ThreeStage({
           matrix={scene.matrix}
           onMatrix={scene.kind === "linear" ? scene.onMatrix : undefined}
           onDrag={setDragging}
+          highlight={scene.kind === "linear" ? scene.highlight : undefined}
         />
       )}
       {scene.kind === "calculus" && <Surface {...scene} />}
