@@ -1,5 +1,7 @@
 # Accessibility and fallbacks
 
+Prediction Studio adds semantic stage navigation, native labeled inputs/radio groups, real disabled states for frozen controls, readable numeric metrics/tables, and SVG plots with textual descriptions. Learning remains possible without WebGL; 3D is not forced onto forecasting or calibration. Every stage was scanned in both themes; physical/human assistive-technology review remains pending. Backup schema v2 supports v1 migration and up to 5 MB of validated progress/journals. Prediction controls and data remain local.
+
 Essential calculations have labeled native numeric inputs/sliders, prediction radio groups, text interpretations, and optional data tables. No assessment requires camera rotation, color discrimination, sound, or pointer dragging. Basis labels, solid versus dashed geometry, numeric coordinates, and original/transformed labels supplement color.
 
 - Tab/Shift+Tab moves through controls. Arrow keys edit numeric inputs/sliders. Radio groups use native keyboard behavior. Visible focus outlines, a skip link, main focus on navigation, labeled navigation, fieldsets, table captions, and status feedback are provided.
@@ -10,3 +12,7 @@ Essential calculations have labeled native numeric inputs/sliders, prediction ra
 - Midnight/daylight/system appearance and four explanation depths are preferences. Fonts and KaTeX MathML are bundled locally.
 
 Automated axe scans cover essential paths in both themes. Browser simulation does not replace VoiceOver/NVDA use, real touchscreen orbit/pinch tests, physical low-end mobile measurements, or human usability review. See TEST_REPORT for executed and unexecuted evidence. These limitations prevent an unqualified production/accessibility certification claim.
+
+## Batch handoff continuation
+
+The optional step-7 details panel uses labeled JSON textareas, native numeric review time, buttons, table captions, status/error feedback, and downloadable local files. All three projects have expanded-panel axe checks in both themes and 390 px overflow checks. Input and label textareas reset their computed results on editing, preventing stale results from being presented as current. Physical-device and human screen-reader review remain NOT RUN.

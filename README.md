@@ -1,5 +1,17 @@
 # Math World 3D
 
+## Prediction Studio review candidate — 0.2.0-rc.2
+
+The `feature/prediction-studio` branch adds three complete Build & Teach paths: next-day energy regression, unseen-machine maintenance classification, and next-week store-demand forecasting. Open Explore → Prediction studio, starting with the Sunday prediction contract. Each project walks through eight stages, from available information to a frozen final test, a conditional decision, and independent transfer practice.
+
+The public v0.1 site remains the released version while the new mission families await the human review gate. The candidate is implemented and testable locally; this is not a claim of completed human educational validation. See the [review package](docs/review/PREDICTION_STUDIO_REVIEW.md) and [curriculum/backlog audit](docs/PREDICTION_CURRICULUM.md).
+
+The [downloadable learning kit](public/workshops/prediction-workshops.zip) contains five executed Python notebooks, transparent algorithms and tested scikit-learn pipelines, a licensed historical UCI dataset, prediction/experiment/model-card templates, tests, source attribution, and separate worked answers. Python runs locally, not on GitHub Pages. See [workshop setup](public/workshops/README.md).
+
+Step 7 now includes a local batch handoff: download the frozen coefficients/tree and training transforms, validate new inputs and publication times, score without refitting, and join outcomes only after they arrive. The same JSON artifact runs in the browser and the standard-library Python scorer. The fifth notebook, `handoff.ipynb`, includes a broken late-feature example, a delayed-label MAE calculation, and a separate worked answer. The handoff's outcomes are fabricated for practice; range warnings are not accuracy measurements.
+
+Learning backups now use schema v2 and migrate v1 without deleting the original v1 browser key. Fitted teaching sessions, freeze/test locks, journals, guidance flags, structured attempts, and misconception feedback persist. The final test is hidden by the teaching workflow, not secured from source inspection. Synthetic results and passed quizzes do not establish real usefulness, causal effects, or mastery.
+
 A standalone mathematics discovery studio. Change a matrix, descend an energy surface, and use the same mathematics to orient a camera, choose production, or fit a line. The core runs entirely in your browser, without accounts, tracking, APIs, or a backend.
 
 ![Discover studio](docs/screenshots/discover-desktop.png)

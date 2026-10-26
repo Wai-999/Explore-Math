@@ -8,6 +8,7 @@ export function Range({
   step = 0.1,
   unit = "",
   onChange,
+  disabled = false,
 }: {
   label: string;
   value: number;
@@ -16,6 +17,7 @@ export function Range({
   step?: number;
   unit?: string;
   onChange: (v: number) => void;
+  disabled?: boolean;
 }) {
   const id = useId();
   return (
@@ -34,6 +36,7 @@ export function Range({
         max={max}
         step={step}
         value={value}
+        disabled={disabled}
         onChange={(e) => onChange(Number(e.target.value))}
       />
     </div>

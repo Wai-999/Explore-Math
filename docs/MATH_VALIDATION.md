@@ -1,5 +1,23 @@
 # Mathematics validation
 
+## Prediction Studio candidate
+
+The browser uses deterministic synthetic generators and separate pure modules for data, preprocessing/training, metrics, and final-test protocol. Linear/ridge training minimizes half mean squared standardized-target error + λ‖w‖²/2, with an unpenalized intercept. Logistic training uses stable log loss and sigmoid. Training-only means/scales are saved with the model; final rows do not fit parameters or preprocessing.
+
+Executed Python fixtures cross-check first observations, fitted coefficients, and validation metrics in all three browser projects to 10⁻⁸ or better. Separate Python tests compare manual ridge/logistic predictions with scikit-learn pipelines using equivalent penalty conventions (ridge alpha=nλ; logistic C=1/(nλ)). Classification undefined denominators return null; AP handles tied probability groups with stepwise recall increments and is distinct from trapezoidal PR area. ROC-AUC gives tied pairs half credit. The one-split tree is a deliberately small greedy squared-error baseline.
+
+Energy uses chronological factory-days; maintenance holds out complete machines; demand uses chronological weeks across known stores. Rolling development cutoffs precede final weeks. The browser residual radius is the empirical 90th percentile of absolute validation residuals, a descriptive interval with no future/conditional coverage guarantee. The synthetic regime-change control changes only the final population and its subsequently observed lags.
+
+The toy pilot rubric is explicit: regression must beat baseline MAE with absolute bias <10 original units; classification must reduce illustrative cost and produce ≤12 alerts per 40 evaluated snapshots. An injected regime change requires investigation. These are teaching criteria, not universal deployment thresholds. Free-text interpretation is saved for human feedback; structured numeric checks do not certify understanding.
+
+The Python companions additionally verify training-only median imputation, calibration on a distinct validation-machine subset, policy selection without test data, grouped/temporal tuning, nested forward evaluation for energy, SVD reconstruction/orthogonality on rectangular training matrices, and training-only PCA. The full interactive spectral curriculum remains planned. Exact data formulas, licenses, and limitations are in public/workshops/DATA.md.
+
+## Frozen-model handoff
+
+The JSON format preserves training-only feature means/scales, standardized-target inverse transformation, the stable logistic link, or the exact selected tree split/leaf values. Names determine feature order; new batches cannot fit transforms. Published-after-cutoff values, missing/extra fields, nonfinite values, invalid domains, incompatible dimensions/versions, and duplicate row IDs are rejected. Three cross-language tests execute the standalone Python scorer against actual browser-compatible artifacts; separate tree checks verify selected leaves.
+
+Monitoring joins unique matching IDs only. A label's availability must be at least prediction time plus the outcome window, and no later than the review time to count. Future-issued predictions do not enter the denominator. Empty eligible labels produce null metrics. Hand fixtures with residuals −4 and +8 verify MAE 6, bias +2, and RMSE √40; partial maturity reports only available outcomes. Binary metrics use the frozen threshold and explicit undefined denominators. Training-range warnings provide no independent evidence of changed error, and these checks cannot authenticate a source's recorded times.
+
 ## Conventions and tolerances
 
 Right-handed x,y,z coordinates, column vectors, row-major storage. A matrix entry at row r and column c has index 3r+c. Columns are transformed unit basis vectors. AB applies B first. Three.js Matrix4 receives explicitly mapped rows. Camera up is mathematical z. SVGs are labeled projections; the numeric state is authoritative. Coordinates are unitless except the explicitly labeled production model.

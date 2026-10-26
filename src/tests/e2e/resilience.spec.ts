@@ -47,7 +47,7 @@ test("export, validated restore, and corrupt backup handling preserve progress",
   await page.getByRole("button", { name: "Export progress" }).click();
   const download = await downloadEvent,
     exported = JSON.parse(await readFile((await download.path())!, "utf8"));
-  expect(exported.version).toBe(1);
+  expect(exported.version).toBe(2);
   expect(exported.theme).toBe("light");
   const input = page.locator("input[type=file]");
   await input.setInputFiles({
