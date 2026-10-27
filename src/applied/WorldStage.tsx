@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { persistLearning } from "../persistence/storage";
 import { useLearning } from "../app/LearningContext";
 import { SceneFrame } from "../engine/SceneFrame";
 import { Formula } from "../components/Formula";
@@ -56,7 +57,7 @@ function NumberInput({
     Number.isFinite(Number(text)) &&
     Number(text) >= rule.min &&
     Number(text) <= rule.max &&
-    (rule.key !== "route" || Number.isInteger(Number(text)));
+    (!["route","view"].includes(rule.key) || Number.isInteger(Number(text)));
   return (
     <label>
       {rule.label} <small>{rule.unit}</small>
@@ -78,7 +79,7 @@ function NumberInput({
             Number.isFinite(n) &&
             n >= rule.min &&
             n <= rule.max &&
-            (rule.key !== "route" || Number.isInteger(n))
+            (!["route","view"].includes(rule.key) || Number.isInteger(n))
           )
             onChange(n);
         }}
@@ -164,8 +165,23 @@ export default function WorldStage({
   useEffect(() => {
     if (replay === 100 && playing) queueMicrotask(() => setPlaying(false));
   }, [replay, playing]);
+  function commitRecord(next: RecordState) {
+    const data = {
+      ...learning,
+      applied: { ...applied, sessions: { ...applied.sessions, [d.id]: next } },
+    };
+    try {
+      persistLearning(data);
+    } catch {
+      setFeedback(
+        "Storage is unavailable; export this session before leaving.",
+      );
+    }
+    setR(next);
+    update(data);
+  }
   function patch(v: Partial<RecordState>) {
-    setR((old) => ({ ...old, ...v }));
+    commitRecord({ ...r, ...v });
   }
   function change(next: Params, syncInputs = true) {
     if (frozen) {
@@ -189,7 +205,7 @@ export default function WorldStage({
   }
   function stage(index: number) {
     if (index === 4 && r.stage !== 4) {
-      const params = { ...mission.params };
+      const params = frozen ? p : { ...mission.params };
       patch({
         stage: index,
         params,
@@ -257,10 +273,17 @@ export default function WorldStage({
       return;
     }
     const next = project();
-    update({
+    const data = {
       ...learning,
       applied: { ...applied, projects: [...applied.projects, next] },
-    });
+    };
+    try {
+      persistLearning(data);
+    } catch {
+      setFeedback("Could not save to browser storage. Export JSON instead.");
+      return;
+    }
+    update(data);
     setFeedback(
       "Project saved locally, including assumptions version, model inputs and evidence. Export a portable copy too.",
     );
@@ -314,6 +337,7 @@ export default function WorldStage({
           Mission level
           <select
             aria-label="Mission difficulty"
+            disabled={frozen}
             value={r.level}
             onChange={(e) => {
               const level = Number(e.target.value);
@@ -451,6 +475,7 @@ export default function WorldStage({
                 {d.examples.map((ex, i) => (
                   <button
                     className="secondary"
+                    disabled={frozen}
                     key={ex.title}
                     onClick={() => {
                       change({ ...fresh(d.id).params, ...ex.params });
@@ -498,6 +523,7 @@ export default function WorldStage({
               </details>
               <button
                 className="secondary"
+                disabled={frozen}
                 onClick={() => {
                   change({ ...fresh(d.id).params, ...d.edge.params });
                   setFeedback(d.edge.explanation);
@@ -560,6 +586,12 @@ export default function WorldStage({
                 <button
                   className="text-button"
                   onClick={() => {
+                    if (frozen) {
+                      setFeedback(
+                        "Reopen guided development before changing cases. The fixed holdout stays consumed.",
+                      );
+                      return;
+                    }
                     if (r.seed + 17 > 1e8) {
                       setFeedback("Seed range exhausted; export this record.");
                       return;
@@ -647,7 +679,7 @@ export default function WorldStage({
                           ].slice(0, 1000),
                           stage: 5,
                         };
-                        setR(guidedRecord);
+                        commitRecord(guidedRecord);
                         setTitle(data.title);
                         setRevision((v) => v + 1);
                         setFeedback(
@@ -770,9 +802,13 @@ export default function WorldStage({
             {geometry.labels[2]}.{" "}
             {geometry.draggable
               ? "Drag the decision sphere or use numeric inputs."
-              : "Change joint angles with numeric inputs; the arm is planar inside a 3D frame."}{" "}
-            Numeric values retain physical units; surface height is rescaled for
-            visibility.
+              : d.id === "robotics"
+                ? "Change joint angles with numeric inputs; the arm is planar inside a 3D frame."
+                : "Feature-space view: controls change model weights, not observed feature coordinates."}{" "}
+            Numeric values retain physical units.{" "}
+            {d.id === "robotics"
+              ? "Arm geometry uses meters; the links lie in z=0."
+              : "Surface height is rescaled for visibility."}
           </p>
           {geometry.lines.some((l) => l.label.includes("path")) && (
             <button
@@ -865,6 +901,7 @@ export default function WorldStage({
                 onClick={() => {
                   const prev = past.at(-1)!;
                   setPast(past.slice(0, -1));
+                  setExample(null);
                   setFuture([...future, p]);
                   patch({ params: prev });
                   setRevision((v) => v + 1);
@@ -878,6 +915,7 @@ export default function WorldStage({
                 onClick={() => {
                   const next = future.at(-1)!;
                   setFuture(future.slice(0, -1));
+                  setExample(null);
                   setPast([...past, p]);
                   patch({ params: next });
                   setRevision((v) => v + 1);
@@ -944,21 +982,13 @@ export default function WorldStage({
               className="secondary"
               disabled={frozen}
               onClick={() => {
-                const X = [
-                    [1.5, 0.5],
-                    [0.5, 2],
-                    [2, 2],
-                  ],
-                  y = [4.7, 7.3, 9.8];
-                const loss =
-                  X.reduce(
-                    (s, row, i) =>
-                      s + (row[0] * p.x + row[1] * p.y - y[i]) ** 2,
-                    0,
-                  ) / 3;
+                const loss = d.holdout!(p);
                 patch({
                   frozen: { params: structuredClone(p), seed: r.seed, loss },
-                  guidance: [...new Set([...r.guidance, "ml:holdout"])],
+                  guidance: [...new Set([...r.guidance, "ml:holdout"])].slice(
+                    0,
+                    1000,
+                  ),
                 });
                 setFeedback(
                   `Frozen model held-out MSE: ${f(loss, 6)} meals². Training loss is ${f(m.value)}. This fixed set is now consumed; changing the model afterward is guided development.`,

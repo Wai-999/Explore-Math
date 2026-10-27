@@ -46,3 +46,23 @@ describe("Two-parameter loss with an honest fixed intercept", () => {
     ).toBeCloseTo(loss(p), 10);
   });
 });
+it("validates a frozen ML session and retains the exposed-test ledger in backups", async () => {
+  const { fresh, validRecord } = await import("./schema");
+  const { parseLearning, INITIAL } = await import("../persistence/storage");
+  const params = { ...defaults("ml"), x: 2, y: 3 };
+  const record = {
+    ...fresh("ml"),
+    params,
+    frozen: { params, seed: 17, loss: 0.0566666667 },
+    guidance: ["ml:holdout"],
+  };
+  expect(validRecord("ml", record)).toBe(true);
+  expect(
+    parseLearning(
+      JSON.stringify({
+        ...INITIAL,
+        applied: { version: 1, sessions: { ml: record }, projects: [] },
+      }),
+    ).applied?.sessions.ml?.frozen?.loss,
+  ).toBe(record.frozen.loss);
+});

@@ -253,3 +253,46 @@ test("ML loss world freezes a model before exposing its separate holdout", async
     }),
   ).toBeDisabled();
 });
+test("Warehouse arm uses joint coordinates, certified path and singularity reasoning", async ({
+  page,
+}) => {
+  await page.goto("#/applications/worlds/robotics");
+  await expect(page.locator("h1")).toContainText("Move the Warehouse Arm");
+  const nav = page.getByRole("navigation", { name: "Applied learning stages" });
+  await nav
+    .getByRole("button", { name: "4. Understand & Prove", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Load worked example 1", exact: true })
+    .click();
+  await expect(page.locator(".applied-metrics")).toContainText("(2.4, 0) m");
+  await page
+    .getByRole("button", { name: "Load worked example 2", exact: true })
+    .click();
+  await expect(page.locator(".applied-metrics")).toContainText("-0.715");
+  await nav.getByRole("button", { name: "5. Mission", exact: true }).click();
+  await page
+    .getByRole("spinbutton", { name: "Joint 1 angle (degrees)", exact: true })
+    .fill("36");
+  await page
+    .getByRole("spinbutton", { name: "Joint 2 angle (degrees)", exact: true })
+    .fill("-53");
+  await page
+    .getByRole("radio", {
+      name: "Compose frame transforms; use the Jacobian for instantaneous rates and check the whole modeled path",
+      exact: true,
+    })
+    .check();
+  await page
+    .getByRole("button", { name: "Check mission", exact: true })
+    .click();
+  await expect(page.locator(".applied-feedback")).toContainText(
+    "Objective met",
+  );
+  await page
+    .getByRole("button", { name: "Replay computed path", exact: true })
+    .click();
+  await expect(
+    page.getByRole("button", { name: "Pause path replay", exact: true }),
+  ).toBeVisible();
+});

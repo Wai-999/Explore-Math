@@ -1,3 +1,5 @@
+import { TRAIN_X as X, TRAIN_Y as Y, heldoutLoss } from "../fixtures";
+export { TRAIN_X as X, TRAIN_Y as Y } from "../fixtures";
 import { defaults } from "../schema";
 import { surfaceGeometry } from "../math";
 import {
@@ -10,13 +12,6 @@ import {
   type Pair,
   type Params,
 } from "../types";
-export const X: Pair[] = [
-    [1, 0],
-    [0, 1],
-    [1, 1],
-    [2, 1],
-  ],
-  Y = [2, 3, 5, 7];
 export function loss(p: Params) {
   return (
     X.reduce((s, row, i) => s + (row[0] * p.x + row[1] * p.y - Y[i]) ** 2, 0) /
@@ -114,6 +109,7 @@ export const definition: Definition = {
   analyze,
   scalar: (p, x, y) => loss({ ...p, x, y }),
   step,
+  holdout: heldoutLoss,
   derive: () => [
     proof(
       "r=Xw−y; L=(r₁²+…+rₙ²)/n",

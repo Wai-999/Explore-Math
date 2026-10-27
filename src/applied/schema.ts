@@ -1,3 +1,4 @@
+import { heldoutLoss } from "./fixtures";
 import { worldIds, type Params, type Rule, type WorldId } from "./types";
 const rule = (
   key: string,
@@ -177,7 +178,12 @@ export function validRecord(id: WorldId, v: unknown): v is RecordState {
       !integer(v.frozen.seed, 1, 1e8) ||
       typeof v.frozen.loss !== "number" ||
       !Number.isFinite(v.frozen.loss) ||
-      v.frozen.loss < 0)
+      v.frozen.loss < 0 ||
+      v.frozen.seed !== v.seed ||
+      !Object.entries(v.frozen.params as Params).every(
+        ([k, value]) => value === (v.params as Params)[k],
+      ) ||
+      Math.abs(v.frozen.loss - heldoutLoss(v.frozen.params as Params)) > 1e-9)
   )
     return false;
   return Array.from(v.attempts).every(

@@ -80,6 +80,7 @@ export interface Definition {
     to: (x: number, y: number, z: number) => Vec3,
   ) => Geometry["lines"];
   step?: (p: Params) => Params;
+  holdout?: (p: Params) => number;
   related: { url: string; label: string };
 }
 export const f = (n: number, d = 3) =>

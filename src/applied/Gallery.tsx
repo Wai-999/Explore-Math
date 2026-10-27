@@ -2,6 +2,13 @@ import { useState } from "react";
 import "./applied.css";
 export const cards = [
   {
+    id: "robotics",
+    title: "Move the Warehouse Arm",
+    domain: "Robotics & Physics",
+    description:
+      "Compose real joint frames, inspect the Jacobian and certify a planar arm path against a synthetic obstacle.",
+  },
+  {
     id: "ml",
     title: "Train the Predictor",
     domain: "Machine Learning",
