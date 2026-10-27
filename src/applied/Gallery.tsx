@@ -2,6 +2,13 @@ import { useState } from "react";
 import "./applied.css";
 export const cards = [
   {
+    id: "finance",
+    title: "Sustainable Profit Decision",
+    domain: "Finance & Economics",
+    description:
+      "Inspect a profit surface, resource matrix and concave objective. Compare every feasible boundary before choosing a plan.",
+  },
+  {
     id: "robotics",
     title: "Move the Warehouse Arm",
     domain: "Robotics & Physics",

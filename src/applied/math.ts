@@ -127,12 +127,15 @@ export function surfaceGeometry(d: Definition, p: Params): Geometry {
   let gradient: Geometry["gradient"];
   if (m.gradient) {
     const [gx, gy] = m.gradient,
-      n = Math.hypot(gx, gy);
+      n = Math.hypot(gx / (xr.max - xr.min), gy / (yr.max - yr.min));
     if (n > 1e-9) {
-      const x = p.x + (0.06 * (xr.max - xr.min) * gx) / n,
-        y = p.y + (0.06 * (yr.max - yr.min) * gy) / n;
+      const x = p.x + (0.06 * gx) / n,
+        y = p.y + (0.06 * gy) / n;
       if (x >= xr.min && x <= xr.max && y >= yr.min && y <= yr.max)
-        gradient = [marker, to(x, y, d.scalar(p, x, y))];
+        gradient = [
+          marker,
+          to(x, y, m.value + gx * (x - p.x) + gy * (y - p.y)),
+        ];
     }
   }
   return {

@@ -57,7 +57,7 @@ function NumberInput({
     Number.isFinite(Number(text)) &&
     Number(text) >= rule.min &&
     Number(text) <= rule.max &&
-    (!["route","view"].includes(rule.key) || Number.isInteger(Number(text)));
+    (!["route", "view"].includes(rule.key) || Number.isInteger(Number(text)));
   return (
     <label>
       {rule.label} <small>{rule.unit}</small>
@@ -79,7 +79,7 @@ function NumberInput({
             Number.isFinite(n) &&
             n >= rule.min &&
             n <= rule.max &&
-            (!["route","view"].includes(rule.key) || Number.isInteger(n))
+            (!["route", "view"].includes(rule.key) || Number.isInteger(n))
           )
             onChange(n);
         }}

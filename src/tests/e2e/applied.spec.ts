@@ -296,3 +296,53 @@ test("Warehouse arm uses joint coordinates, certified path and singularity reaso
     page.getByRole("button", { name: "Pause path replay", exact: true }),
   ).toBeVisible();
 });
+test("Finance rejects an infeasible proposal and checks a boundary optimum", async ({
+  page,
+}) => {
+  await page.goto("#/applications/worlds/finance");
+  await expect(page.locator("h1")).toContainText("Sustainable Profit Decision");
+  const nav = page.getByRole("navigation", { name: "Applied learning stages" });
+  await nav
+    .getByRole("button", { name: "4. Understand & Prove", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Load worked example 1", exact: true })
+    .click();
+  await expect(page.locator(".applied-metrics")).toContainText("248 $/day");
+  await page
+    .getByRole("button", { name: "Load worked example 2", exact: true })
+    .click();
+  await expect(page.locator(".applied-metrics")).toContainText("412 $/day");
+  await page
+    .getByRole("button", {
+      name: "A high-profit but infeasible proposal",
+      exact: true,
+    })
+    .click();
+  await expect(page.locator(".applied-warning").first()).toContainText(
+    "exceeds",
+  );
+  await nav.getByRole("button", { name: "5. Mission", exact: true }).click();
+  const q = (20 + 0.18 * 147) / 0.96;
+  await page
+    .getByRole("spinbutton", {
+      name: "Production quantity (items/day)",
+      exact: true,
+    })
+    .fill(String(q));
+  await page
+    .getByRole("spinbutton", { name: "Investment spend ($/day)", exact: true })
+    .fill(String(147 - 2 * q));
+  await page
+    .getByRole("radio", {
+      name: "Check the feasible set, boundary candidates and the concavity assumptions",
+      exact: true,
+    })
+    .check();
+  await page
+    .getByRole("button", { name: "Check mission", exact: true })
+    .click();
+  await expect(page.locator(".applied-feedback")).toContainText(
+    "Objective met",
+  );
+});
