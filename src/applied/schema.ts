@@ -59,6 +59,8 @@ export const rules: Record<WorldId, Rule[]> = {
     rule("x", "Probe x", "m", 0, 4, 1),
     rule("y", "Probe y", "m", 0, 4, 1),
     rule("route", "Route alternative", "index", 0, 3, 0, 1),
+    rule("dx", "Probe direction x", "m/unit t", -2, 2, 1),
+    rule("dy", "Probe direction y", "m/unit t", -2, 2, 2),
     rule("edge", "Edge 0–1 multiplier", "factor", 0.5, 3, 1),
     rule("climb", "Ascent penalty", "cost/m", 0, 4, 1),
   ],

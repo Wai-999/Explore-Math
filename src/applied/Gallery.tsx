@@ -2,6 +2,13 @@ import { useState } from "react";
 import "./applied.css";
 export const cards = [
   {
+    id: "gis",
+    title: "Deliver Through the Terrain",
+    domain: "GIS & Logistics",
+    description:
+      "Trace terrain gradients, compare route profiles and run Dijkstra on a small synthetic cost graph.",
+  },
+  {
     id: "finance",
     title: "Sustainable Profit Decision",
     domain: "Finance & Economics",

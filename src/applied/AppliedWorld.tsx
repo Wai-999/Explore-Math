@@ -16,6 +16,7 @@ const views: Record<string, ReturnType<typeof view>> = {
   ml: view(() => import("./models/ml")),
   robotics: view(() => import("./models/robotics")),
   finance: view(() => import("./models/finance")),
+  gis: view(() => import("./models/gis")),
 };
 export default function AppliedWorld({
   id,

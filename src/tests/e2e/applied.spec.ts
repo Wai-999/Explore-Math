@@ -346,3 +346,49 @@ test("Finance rejects an infeasible proposal and checks a boundary optimum", asy
     "Objective met",
   );
 });
+test("GIS rejects a hazard route and grades the lowest-cost traversable corridor", async ({
+  page,
+}) => {
+  await page.goto("#/applications/worlds/gis");
+  await expect(page.locator("h1")).toContainText("Deliver Through the Terrain");
+  const nav = page.getByRole("navigation", { name: "Applied learning stages" });
+  await nav
+    .getByRole("button", { name: "4. Understand & Prove", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Load worked example 2", exact: true })
+    .click();
+  await expect(page.locator(".applied-metrics")).toContainText("1.25 m/unit t");
+  await page
+    .getByRole("button", {
+      name: "A short route can cross a hazard",
+      exact: true,
+    })
+    .click();
+  await expect(page.locator(".applied-metrics")).toContainText(
+    "blocked / infeasible",
+  );
+  await nav.getByRole("button", { name: "5. Mission", exact: true }).click();
+  const values = await page
+    .locator(".applied-metrics > div")
+    .filter({ hasText: "Alternatives 0,1,2,3" })
+    .locator("strong")
+    .innerText();
+  const costs = values.split(" · ").map(Number),
+    best = costs.slice(0, 3).indexOf(Math.min(...costs.slice(0, 3)));
+  await page
+    .getByRole("spinbutton", { name: "Route alternative (index)", exact: true })
+    .fill(String(best));
+  await page
+    .getByRole("radio", {
+      name: "Use nonnegative graph costs; distinguish local slope from cumulative route cost",
+      exact: true,
+    })
+    .check();
+  await page
+    .getByRole("button", { name: "Check mission", exact: true })
+    .click();
+  await expect(page.locator(".applied-feedback")).toContainText(
+    "Optimal corridor found",
+  );
+});
