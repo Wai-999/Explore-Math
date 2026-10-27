@@ -1,3 +1,4 @@
+import { AppliedMesh } from "../applied/AppliedMesh";
 import { useEffect, useMemo, useState } from "react";
 import { Canvas, type ThreeEvent } from "@react-three/fiber";
 import { OrbitControls, Line } from "@react-three/drei";
@@ -429,6 +430,13 @@ export default function ThreeStage({
         />
       )}
       {scene.kind === "calculus" && <Surface {...scene} />}
+      {scene.kind === "applied" && (
+        <AppliedMesh
+          geometry={scene.geometry}
+          onPoint={scene.onPoint}
+          onDrag={setDragging}
+        />
+      )}
       <AxisLabel text="x" position={[3.15, 0, 0]} />
       <AxisLabel text="y" position={[0, 3.15, 0]} />
       <AxisLabel text="z" position={[0, 0, 3.15]} />

@@ -1,5 +1,9 @@
 # Release status
 
+## Applied 3D Worlds preview: 0.4.0-preview.1
+
+Six working worlds are implemented on `feat/applied-six-worlds`, preserving the V2/Prediction Studio release. [Release notes](applied-worlds/RELEASE_NOTES.md) identify scope and limits; [quality evidence](applied-worlds/TEST_AND_ACCESSIBILITY.md) records actual checks. The owner explicitly requested execution and deployment; human reviews remain pending under preview status. A tested local build is not itself a deployment claim: the PR handoff records the actual green CI, Pages run and public browser verification.
+
 ## V2 R1 public preview: 0.3.0-preview.1
 
 Four guided mathematics paths and two safe project templates are implemented on `feat/deep-explore-learning-v2`, based on the Prediction Studio candidate. See [the factual V2 release report](v2/RELEASE_AND_REMAINING_WORK.md) and [quality evidence](v2/TEST_AND_USABILITY_REPORT.md). The owner explicitly authorized publishing this as a preview on October 26, 2026, with human reviews pending. The app shows a preview label; completed workflow and live verification evidence are recorded in [PR #2](https://github.com/Wai-999/Explore-Math/pull/2). This authorization does not establish educational effectiveness.

@@ -41,6 +41,7 @@ export function SceneFrame({
     [available] = useState(supportsWebGL),
     [lost, setLost] = useState(false);
   const can3d =
+    scene.kind === "applied" ||
     scene.kind === "linear" ||
     scene.kind === "calculus" ||
     scene.kind === "robot";
@@ -88,19 +89,23 @@ export function SceneFrame({
           <i className="solid" />{" "}
           {scene.kind === "calculus"
             ? "Particle / path"
-            : scene.kind === "business"
-              ? "Profit / quantity"
-              : scene.kind === "regression"
-                ? "Fitted line"
-                : "Transformed"}{" "}
+            : scene.kind === "applied"
+              ? "Computed model"
+              : scene.kind === "business"
+                ? "Profit / quantity"
+                : scene.kind === "regression"
+                  ? "Fitted line"
+                  : "Transformed"}{" "}
           <i className="dashed" />{" "}
           {scene.kind === "calculus"
             ? "Tangent plane"
-            : scene.kind === "business"
-              ? "Dollars / day"
-              : scene.kind === "regression"
-                ? "Residuals"
-                : "Original"}
+            : scene.kind === "applied"
+              ? "Reference / constraints"
+              : scene.kind === "business"
+                ? "Dollars / day"
+                : scene.kind === "regression"
+                  ? "Residuals"
+                  : "Original"}
         </span>
         <div className="scene-tools">
           {can3d && (

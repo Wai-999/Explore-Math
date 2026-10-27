@@ -1,5 +1,13 @@
 # Explore-Math
 
+## Applied 3D Worlds preview — 0.4.0-preview.1
+
+Applications → **Applied 3D Worlds** adds six complete teaching models: Sales, Marketing, Machine Learning, Robotics, Finance and GIS. Each follows Discover → Predict → Experiment → Understand & Prove → Mission → Build, with two worked examples, justified derivations, seeded challenges, optional depth, synchronized 3D/SVG/numeric views and locally saved projects. Export validated JSON, decision CSV, a readable report and standalone Python. Sales distinguishes demand/revenue/profit; Marketing separates response, attribution and randomized lift; ML freezes its separate holdout; the arm exposes transforms/Jacobians; Finance checks budget boundaries; GIS solves nonnegative graph costs over synthetic terrain.
+
+The five destinations, old projects, Prediction Studio and portable learning backups remain. Original schema-v2 data is backed up before the additive applied-world upgrade. No new dependency, account, telemetry or API is needed. All six models are **synthetic / illustrative**; they do not establish real-world effectiveness. Human mathematics, novice, physical touch and screen-reader reviews remain pending under the owner-authorized preview publication.
+
+See the [baseline](docs/applied-worlds/BASELINE.md), [model assumptions](docs/applied-worlds/MATH_AND_MODEL_ASSUMPTIONS.md), [learning design](docs/applied-worlds/LEARNING_DESIGN.md), [quality evidence](docs/applied-worlds/TEST_AND_ACCESSIBILITY.md) and [release/limits](docs/applied-worlds/RELEASE_NOTES.md). Actual publication evidence is recorded in the release PR after the existing Pages workflow and live journeys pass.
+
 ## V2 R1 learning preview — 0.3.0-preview.1
 
 Four guided paths now connect manipulation, two worked examples, justified derivations, counterexamples and seeded practice: vector addition/projection, matrix action/determinants, derivatives/limits, and gradients/optimization. Discover begins with vectors; the five destinations and existing sandbox URLs remain. Explanation depth is a view preference, and saved attempts distinguish independent numerical work from guided practice.
@@ -63,7 +71,7 @@ Progress, theme, bookmarks, and explanation depth use versioned localStorage. Ex
 
 Independent solutions are dated examples, not certified competence or demonstrated long-term retention. Opening an applied mission's worked solution marks that attempt guided. There are no fabricated mastery percentages. The math has automated verification; independent human mathematics and novice-learning reviews are still required before a production-release claim.
 
-SVD/PCA, full 3D eigensolvers, systems/row-reduction lessons, chain-rule scenes, complete integral lessons, multivariable integration, vector calculus, and constrained optimization remain planned. They are not empty playable pages.
+SVD/PCA, full 3D eigensolvers, systems/row-reduction lessons, chain-rule scenes, complete integral lessons, multivariable integration, vector calculus, and general constrained-optimization lessons remain planned. The applied Finance and Marketing worlds already cover their specific bounded models. They are not empty playable pages.
 
 ## Architecture and hosting
 

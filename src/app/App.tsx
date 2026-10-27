@@ -20,6 +20,7 @@ const ApplicationIndex = lazy(() =>
     default: m.ApplicationIndex,
   })),
 );
+const AppliedWorld = lazy(() => import("../applied/AppliedWorld"));
 const ProjectBuilder = lazy(() => import("../projects/ProjectBuilder"));
 const JourneySummary = lazy(() => import("../education/JourneySummary"));
 const PredictionStudio = lazy(() => import("../prediction/PredictionStudio"));
@@ -447,6 +448,62 @@ function MyLearning({
           checks do not establish educational effectiveness.
         </p>
       </section>
+      {((learning.applied?.projects.length || 0) > 0 ||
+        Object.keys(learning.applied?.sessions || {}).length > 0) && (
+        <section className="learning-card">
+          <h2>Applied world journeys and projects</h2>
+          <ul>
+            {Object.entries(learning.applied?.sessions || {}).map(
+              ([id, record]) => (
+                <li key={id}>
+                  <a href={`#/applications/worlds/${id}`}>
+                    Continue{" "}
+                    {id === "ml"
+                      ? "Machine Learning"
+                      : id.charAt(0).toUpperCase() + id.slice(1)}
+                  </a>{" "}
+                  · stage {record!.stage + 1}/6 · {record!.attempts.length}{" "}
+                  recorded objective attempts.{" "}
+                  {record!.attempts.at(-1)
+                    ? record!.attempts.at(-1)!.guided
+                      ? "Last attempt guided."
+                      : "No hint before the last attempt."
+                    : "No independent evidence recorded."}
+                </li>
+              ),
+            )}
+          </ul>
+          <div className="applied-project-list">
+            {learning.applied?.projects.map((p) => (
+              <div key={p.id}>
+                <a href={`#/applications/worlds/${p.world}/${p.id}`}>
+                  {p.title} →
+                </a>
+                <button
+                  className="text-button"
+                  onClick={() =>
+                    update({
+                      ...learning,
+                      applied: {
+                        ...learning.applied!,
+                        projects: learning.applied!.projects.filter(
+                          (item) => item.id !== p.id,
+                        ),
+                      },
+                    })
+                  }
+                >
+                  Remove saved copy of {p.title}
+                </button>
+              </div>
+            ))}
+          </div>
+          <p>
+            Removing a local copy does not delete exported backups. Explanations
+            require self/human review.
+          </p>
+        </section>
+      )}
       <JourneySummary />
       <div className="learning-grid">
         <section className="learning-card">
@@ -954,7 +1011,13 @@ export default function App() {
               ) : active === "challenges" ? (
                 <Challenges />
               ) : active === "applications" ? (
-                sub === "builder" ? (
+                sub === "worlds" ? (
+                  <AppliedWorld
+                    key={`${detail || "gallery"}:${projectId || "new"}`}
+                    id={detail}
+                    projectId={projectId}
+                  />
+                ) : sub === "builder" ? (
                   <ProjectBuilder
                     key={`${detail || "vector-navigation"}:${projectId || "new"}`}
                     projects={learning.projects}

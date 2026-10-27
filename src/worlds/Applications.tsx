@@ -1,3 +1,4 @@
+import AppliedGallery from "../applied/Gallery";
 import { StudioEntry } from "../prediction/StudioLinks";
 import { Formula } from "../components/Formula";
 import { useMemo, useState } from "react";
@@ -31,6 +32,7 @@ export function ApplicationIndex() {
           powerful ideas.
         </p>
       </div>
+      <AppliedGallery embedded />
       <section
         className="project-sector-bridge"
         aria-labelledby="project-sector-title"

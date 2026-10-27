@@ -427,7 +427,10 @@ describe("backup-before-write and recoverable unreadable data", () => {
     ]);
     expect(storage.writes()[0].value).toBe(raw);
     expect(storage.data.get(PRE_UPGRADE_KEY)).toBe(raw);
-    expect(parseLearning(storage.data.get(STORAGE_KEY)!)).toEqual(next);
+    expect(parseLearning(storage.data.get(STORAGE_KEY)!)).toEqual({
+      ...next,
+      applied: { version: 1, sessions: {}, projects: [] },
+    });
   });
   it("never replaces the old active key when the required backup fails", () => {
     const raw = JSON.stringify(legacyV2(), null, 2);

@@ -1,3 +1,8 @@
+import {
+  validApplied,
+  emptyApplied,
+  type AppliedState,
+} from "../applied/schema";
 import { validProjectCollection, type ProjectSpec } from "../projects/schema";
 import { validJourney, type JourneySession } from "../education/session";
 import { conceptIds, type ConceptId } from "../education/model";
@@ -20,6 +25,7 @@ export interface Learning {
   studioHistory: StudioHistory[];
   journeys: Partial<Record<ConceptId, JourneySession>>;
   projects: ProjectSpec[];
+  applied?: AppliedState;
 }
 export const INITIAL: Learning = {
   version: 2,
@@ -32,6 +38,7 @@ export const INITIAL: Learning = {
   studioHistory: [],
   journeys: {},
   projects: [],
+  applied: emptyApplied(),
 };
 export const STORAGE_KEY = "math-world-3d:v2";
 export function parseLearning(text: string): Learning {
@@ -110,7 +117,10 @@ export function parseLearning(text: string): Learning {
     throw Error("Invalid guided-learning record.");
   if (v.projects !== undefined && !validProjectCollection(v.projects))
     throw Error("Invalid saved project collection.");
+  if (v.applied !== undefined && !validApplied(v.applied))
+    throw Error("Invalid applied-world learning state.");
   return {
+    ...(v.applied !== undefined ? { applied: v.applied } : {}),
     version: 2,
     theme: v.theme,
     depth: v.depth,
@@ -139,25 +149,39 @@ export function loadLearning(): { data: Learning; notice: string } {
 }
 
 export const PRE_UPGRADE_KEY = "math-world-3d:before-guided-upgrade";
+export const APPLIED_BACKUP_KEY = "math-world-3d:before-applied-worlds";
 export const RECOVERY_KEY = "math-world-3d:protected-unreadable-data";
 /** Backup-before-write is required: a failed backup must not overwrite the old key. */
 export function persistLearning(data: Learning) {
   const raw = localStorage.getItem(STORAGE_KEY);
   if (raw) {
     let unreadable = false,
-      legacy = false;
+      legacy = false,
+      appliedUpgrade = false;
     try {
       const old = JSON.parse(raw);
       parseLearning(raw);
+      appliedUpgrade = old.applied === undefined;
       legacy = old.journeys === undefined || old.projects === undefined;
     } catch {
       unreadable = true;
     }
     if (unreadable) localStorage.setItem(RECOVERY_KEY, raw);
-    else if (legacy && !localStorage.getItem(PRE_UPGRADE_KEY))
-      localStorage.setItem(PRE_UPGRADE_KEY, raw);
+    else {
+      if (legacy && !localStorage.getItem(PRE_UPGRADE_KEY))
+        localStorage.setItem(PRE_UPGRADE_KEY, raw);
+      if (
+        !legacy &&
+        appliedUpgrade &&
+        !localStorage.getItem(APPLIED_BACKUP_KEY)
+      )
+        localStorage.setItem(APPLIED_BACKUP_KEY, raw);
+    }
   }
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify({ ...data, applied: data.applied || emptyApplied() }),
+  );
 }
 export function originalLearningBackup() {
   const current = localStorage.getItem(STORAGE_KEY);
@@ -170,6 +194,7 @@ export function originalLearningBackup() {
   }
   return (
     localStorage.getItem(RECOVERY_KEY) ||
+    localStorage.getItem(APPLIED_BACKUP_KEY) ||
     localStorage.getItem(PRE_UPGRADE_KEY) ||
     localStorage.getItem("math-world-3d:v1") ||
     localStorage.getItem(STORAGE_KEY)

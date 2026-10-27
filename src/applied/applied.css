@@ -1,0 +1,288 @@
+.applied-gallery {
+  margin: 24px 0 44px;
+}
+.applied-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.applied-cards .learning-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.applied-cards .primary {
+  margin-top: auto;
+}
+.applied-world {
+  padding-bottom: 30px;
+}
+.applied-settings {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.applied-settings label {
+  display: grid;
+  gap: 8px;
+}
+.applied-settings select {
+  min-width: 170px;
+}
+.applied-stages {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 14px;
+}
+.applied-stages button {
+  padding: 12px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+}
+.applied-stages .active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.applied-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(300px, 1fr);
+  gap: 24px;
+  grid-template-areas: "scene task";
+  align-items: start;
+  margin-top: 24px;
+}
+.applied-task {
+  grid-area: task;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 24px;
+  border-radius: 14px;
+  min-width: 0;
+}
+.applied-task h2 {
+  margin: 0 0 16px;
+}
+.applied-task p,
+.applied-task li {
+  font-size: 14px;
+  line-height: 1.75;
+}
+.applied-task ul {
+  padding-left: 18px;
+}
+.applied-task > label {
+  display: grid;
+  gap: 10px;
+  margin: 18px 0;
+}
+.applied-task input,
+.applied-task textarea {
+  width: 100%;
+}
+.applied-task textarea {
+  min-height: 110px;
+}
+.applied-task input[type="radio"] {
+  width: auto;
+}
+.applied-choice {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px 0;
+}
+.applied-task fieldset {
+  border: 1px solid var(--border);
+  padding: 12px;
+  margin: 18px 0;
+}
+.applied-task legend {
+  font-size: 13px;
+}
+.applied-experiment {
+  grid-area: scene;
+  min-width: 0;
+}
+.applied-experiment .stage {
+  height: 410px;
+}
+.applied-experiment .stage canvas {
+  touch-action: none;
+}
+.applied-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 22px 0;
+}
+.applied-controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+}
+.applied-controls input {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+}
+.applied-controls small {
+  font-size: 11px;
+  color: var(--muted);
+}
+.applied-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  padding: 20px 0;
+}
+.applied-metrics > div {
+  display: grid;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 14px;
+}
+.applied-metrics span {
+  font-size: 11px;
+  color: var(--muted);
+}
+.applied-metrics strong {
+  font-size: 18px;
+  overflow-wrap: anywhere;
+}
+.applied-warning {
+  border-left: 3px solid var(--accent);
+  padding: 10px 14px;
+  background: var(--panel);
+  font-size: 13px;
+}
+.applied-world details {
+  margin: 20px 0;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+.applied-world summary {
+  cursor: pointer;
+  font-size: 13px;
+  min-height: 40px;
+}
+.applied-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 18px 0;
+}
+.applied-world pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 14px;
+  max-width: 100%;
+  font-size: 12px;
+}
+.applied-world table {
+  width: 100%;
+  font-size: 12px;
+  table-layout: fixed;
+  overflow-wrap: anywhere;
+}
+.applied-world caption {
+  text-align: left;
+  color: var(--muted);
+  line-height: 1.6;
+  padding-bottom: 12px;
+}
+.applied-world td {
+  padding: 7px;
+  border-bottom: 1px solid var(--border);
+}
+.applied-world dl {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.applied-world dt {
+  font-weight: 650;
+  margin-top: 12px;
+}
+.applied-world dd {
+  margin: 4px 0;
+  color: var(--muted);
+}
+.applied-feedback {
+  margin: 20px 0;
+  line-height: 1.7;
+  font-size: 14px;
+}
+.applied-world input:disabled {
+  opacity: 0.65;
+}
+.applied-world .katex-display {
+  max-width: 100%;
+  overflow: auto;
+}
+.applied-task .derivation-stepper {
+  padding: 0;
+}
+.applied-task .derivation-stepper p {
+  overflow-wrap: anywhere;
+}
+.applied-project-list {
+  display: grid;
+  gap: 10px;
+}
+@media (max-width: 1050px) {
+  .applied-layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "task" "scene";
+  }
+  .applied-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .applied-cards {
+    grid-template-columns: 1fr;
+  }
+  .applied-task {
+    padding: 18px;
+  }
+  .applied-stages button {
+    font-size: 11px;
+    min-height: 44px;
+  }
+  .applied-experiment .stage {
+    height: 300px;
+  }
+  .applied-metrics strong {
+    font-size: 16px;
+  }
+  .applied-world .scene-topline > span {
+    max-width: 85%;
+    font-size: 8px;
+  }
+  .applied-world .scene-live {
+    display: none;
+  }
+  .applied-settings {
+    gap: 12px;
+  }
+  .applied-settings label {
+    width: 100%;
+  }
+  .applied-settings select {
+    width: 100%;
+  }
+}
+
+.applied-plan-field {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0;
+  font-size: 13px;
+}

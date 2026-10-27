@@ -1,3 +1,5 @@
+import { AppliedFallback } from "../applied/AppliedGeometry";
+import type { Geometry } from "../applied/types";
 import { useId, useRef, useState } from "react";
 import { transform, type Mat3, type Vec3 } from "../math/linear";
 import {
@@ -9,6 +11,11 @@ import {
 } from "../math/calculus";
 import { business, TRAIN } from "../math/applications";
 export type SceneProps =
+  | {
+      kind: "applied";
+      geometry: Geometry;
+      onPoint?: (x: number, y: number) => void;
+    }
   | {
       kind: "linear";
       matrix: Mat3;
@@ -59,6 +66,8 @@ export function GeometryView(props: SceneProps) {
   const [drag, setDrag] = useState<number | null>(null);
   const matrix =
     props.kind === "linear" || props.kind === "robot" ? props.matrix : null;
+  if (props.kind === "applied")
+    return <AppliedFallback geometry={props.geometry} />;
   if (matrix) {
     const highlight = props.kind === "linear" ? props.highlight : undefined;
     const pts = corners.map((p) => project(transform(matrix, p))),
