@@ -1,0 +1,144 @@
+import { test, expect } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
+import { readFile } from "node:fs/promises";
+test("Sales vertical slice: scene, prediction, derivation, mission and portable project", async ({
+  page,
+}, info) => {
+  test.setTimeout(90000);
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  await page.goto("#/applications/worlds/sales");
+  await expect(page.locator("h1")).toContainText("Sales Decision Simulator");
+  const nav = page.getByRole("navigation", { name: "Applied learning stages" });
+  await nav.getByRole("button", { name: "2. Predict", exact: true }).click();
+  await page
+    .getByRole("radio", {
+      name: "Demand falls; profit can rise or fall",
+      exact: true,
+    })
+    .check();
+  await nav.getByRole("button", { name: "3. Experiment", exact: true }).click();
+  await page
+    .getByRole("spinbutton", { name: "Price ($/item)", exact: true })
+    .fill("10");
+  await expect(page.locator(".applied-metrics")).toContainText("122 $/day");
+  await nav
+    .getByRole("button", { name: "4. Understand & Prove", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Load worked example 1", exact: true })
+    .click();
+  await expect(page.locator(".applied-metrics")).toContainText("480 $/day");
+  await page
+    .getByRole("button", { name: "Load worked example 2", exact: true })
+    .click();
+  await expect(page.locator(".applied-metrics")).toContainText("122 $/day");
+  await page
+    .getByRole("button", { name: "Next proof step", exact: true })
+    .click();
+  await expect(page.locator(".derivation-stepper")).toContainText("Step 2");
+  await nav.getByRole("button", { name: "5. Mission", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Reveal after an attempt", exact: true })
+    .isDisabled()
+    .then((v) => expect(v).toBe(true));
+  await page
+    .getByRole("radio", {
+      name: "Margin, costs and constraints determine the decision",
+      exact: true,
+    })
+    .check();
+  // Seed 17 has mix .45: interior revenue price is 78/(2×1.9).
+  await page
+    .getByRole("spinbutton", { name: "Price ($/item)", exact: true })
+    .fill(String(78 / 3.8));
+  await page
+    .getByRole("button", { name: "Check mission", exact: true })
+    .click();
+  await expect(page.locator(".applied-feedback")).toContainText(
+    "Objective met",
+  );
+  await page
+    .getByRole("button", { name: "Conceptual hint", exact: true })
+    .click();
+  await expect(
+    page.getByRole("region", { name: "Current world task" }),
+  ).toContainText("Current case is guided");
+  await nav.getByRole("button", { name: "6. Build", exact: true }).click();
+  await page
+    .getByLabel("Project name", { exact: true })
+    .fill("Sales acceptance scenario");
+  await page
+    .getByRole("button", { name: "Save world project", exact: true })
+    .click();
+  await expect(page.locator(".applied-feedback")).toContainText(
+    "saved locally",
+  );
+  const download = page.waitForEvent("download");
+  await page
+    .getByRole("button", { name: "Export world JSON", exact: true })
+    .click();
+  const file = (await (await download).path())!;
+  const p = JSON.parse(await readFile(file, "utf8"));
+  expect(p.world).toBe("sales");
+  expect(p.record.attempts[0].guided).toBe(false);
+  expect(p.record.guidance.length).toBe(1);
+  await page.locator("input[type=file]").setInputFiles(file);
+  await expect(page.locator(".applied-feedback")).toContainText(
+    "imported as a remix",
+  );
+  const scan = await new AxeBuilder({ page }).analyze();
+  expect(
+    scan.violations.filter(
+      (v) => v.impact === "critical" || v.impact === "serious",
+    ),
+  ).toEqual([]);
+  await page.goto("#/learning");
+  await expect(
+    page.getByRole("link", {
+      name: "Sales acceptance scenario →",
+      exact: true,
+    }),
+  ).toBeVisible();
+  await page.reload();
+  await page
+    .getByRole("link", { name: "Sales acceptance scenario →", exact: true })
+    .click();
+  await expect(page.getByLabel("Project name", { exact: true })).toHaveValue(
+    "Sales acceptance scenario",
+  );
+  await page.screenshot({
+    path: `test-results/applied-sales-${info.project.name}.png`,
+    fullPage: true,
+  });
+  expect(errors).toEqual([]);
+});
+test("Sales 3D changes and context-loss/mobile fallback retain the same decision", async ({
+  page,
+}) => {
+  await page.goto("#/applications/worlds/sales");
+  const canvas = page.locator("canvas");
+  await expect(canvas.or(page.locator(".fallback-notice"))).toBeVisible();
+  if (await canvas.isVisible()) {
+    await expect(canvas).toHaveAttribute("data-ready", "true");
+    const before = await canvas.screenshot();
+    await page
+      .getByRole("spinbutton", { name: "Price ($/item)", exact: true })
+      .fill("10");
+    expect(before.equals(await canvas.screenshot())).toBe(false);
+    await canvas.evaluate((el) =>
+      (el as HTMLCanvasElement)
+        .getContext("webgl2")
+        ?.getExtension("WEBGL_lose_context")
+        ?.loseContext(),
+    );
+    await expect(page.locator(".fallback-notice")).toContainText("lost");
+  }
+  await page
+    .getByRole("spinbutton", { name: "Price ($/item)", exact: true })
+    .fill("20");
+  await expect(page.locator(".applied-metrics")).toContainText("542 $/day");
+  await page.setViewportSize({ width: 375, height: 900 });
+  await expect(page.locator("body")).toHaveJSProperty("scrollWidth", 375);
+  await expect(page.locator(".applied-fallback")).toBeVisible();
+});

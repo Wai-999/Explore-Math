@@ -41,6 +41,7 @@ export function SceneFrame({
     [available] = useState(supportsWebGL),
     [lost, setLost] = useState(false);
   const can3d =
+    scene.kind === "applied" ||
     scene.kind === "linear" ||
     scene.kind === "calculus" ||
     scene.kind === "robot";
