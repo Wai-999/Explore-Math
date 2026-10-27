@@ -108,6 +108,10 @@ function analyze(p: Params): Analysis {
       "cᵀ=[1,1] multiplies the 2×1 spend vector. cᵀx is total $/day; it must not exceed the budget.",
     feasible: feasible(p),
     metrics: [
+      [
+        "Bounded ceiling sensitivity",
+        `${f(marketingValues({ ...p, a: clamp(p.a * (1 - p.uncertainty), 5, 60), b: clamp(p.b * (1 - p.uncertainty), 5, 60) }).net)} to ${f(marketingValues({ ...p, a: clamp(p.a * (1 + p.uncertainty), 5, 60), b: clamp(p.b * (1 + p.uncertainty), 5, 60) }).net)} $/day; scenario range, not confidence interval`,
+      ],
       ["Baseline", f(p.baseline) + " conversions/day"],
       ["Modeled incremental response", f(v.increment) + " conversions/day"],
       ["Total modeled response", f(v.total) + " conversions/day"],
@@ -122,6 +126,7 @@ function analyze(p: Params): Analysis {
         ? ["Spending violates the budget or a minimum-spend constraint."]
         : []),
       `Synthetic randomized holdouts: A lift ${f(a.lift * 100)} percentage points; normal-approximation 95% interval ${pair(a.interval.map((v) => 100 * v))}. B lift ${f(b.lift * 100)} points, interval ${pair(b.interval.map((v) => 100 * v))}.`,
+      "Sensitivity scenarios scale both response ceilings within their stated 5–60 bounds. This assumption range is not posterior or sampling uncertainty.",
       "A has 160 last-click attributions and B only 50 in the toy report. Attribution is not incremental lift. Random assignment, no interference and the stated observation window are assumptions, not verified field evidence.",
     ],
   };

@@ -186,10 +186,22 @@ test("Marketing connects budget allocation, derivation, independent case and sav
   await page
     .getByRole("button", { name: "Save world project", exact: true })
     .click();
+  await page
+    .getByText("Experiment-planning worksheet", { exact: true })
+    .click();
+  await page
+    .getByLabel("Assignment unit and randomization", { exact: true })
+    .fill("Randomize eligible stores; do not use customer identities.");
   await page.reload();
   await expect(
     page.getByRole("region", { name: "Current world task" }),
   ).toContainText("Build a reusable experiment");
+  await page
+    .getByText("Experiment-planning worksheet", { exact: true })
+    .click();
+  await expect(
+    page.getByLabel("Assignment unit and randomization", { exact: true }),
+  ).toHaveValue("Randomize eligible stores; do not use customer identities.");
 });
 test("ML loss world freezes a model before exposing its separate holdout", async ({
   page,
@@ -391,4 +403,117 @@ test("GIS rejects a hazard route and grades the lowest-cost traversable corridor
   await expect(page.locator(".applied-feedback")).toContainText(
     "Optimal corridor found",
   );
+});
+for (const id of ["sales", "marketing", "ml", "robotics", "finance", "gis"]) {
+  test(`${id}: mobile fallback, both themes, all stages and portable project`, async ({
+    page,
+  }, info) => {
+    test.setTimeout(120000);
+    await page.addInitScript(() => {
+      const native = HTMLCanvasElement.prototype.getContext;
+      HTMLCanvasElement.prototype.getContext = function (
+        this: HTMLCanvasElement,
+        type: string,
+        options?: unknown,
+      ) {
+        if (type === "webgl" || type === "webgl2") return null;
+        return native.call(this, type, options);
+      } as typeof native;
+    });
+    await page.setViewportSize({ width: 375, height: 900 });
+    await page.goto(`#/applications/worlds/${id}`);
+    await expect(page.locator(".applied-fallback")).toBeVisible();
+    await expect(page.locator(".fallback-notice")).toContainText("unavailable");
+    const first = page
+        .locator(".applied-controls")
+        .first()
+        .locator("input")
+        .first(),
+      before = await first.inputValue();
+    await first.press("ArrowUp");
+    await expect(first).not.toHaveValue(before);
+    for (const theme of ["dark", "light"]) {
+      await page.goto("#/learning");
+      await page.getByLabel("Appearance", { exact: true }).selectOption(theme);
+      await page.goto(`#/applications/worlds/${id}`);
+      const nav = page.getByRole("navigation", {
+        name: "Applied learning stages",
+      });
+      for (let stage = 0; stage < 6; stage++) {
+        await nav.locator("button").nth(stage).click();
+        const result = await new AxeBuilder({ page }).analyze();
+        expect(
+          result.violations.filter(
+            (v) => v.impact === "serious" || v.impact === "critical",
+          ),
+          `${id}/${theme}/${stage}`,
+        ).toEqual([]);
+        await expect(page.locator("body")).toHaveJSProperty("scrollWidth", 375);
+      }
+    }
+    await page
+      .getByLabel("Project name", { exact: true })
+      .fill(id + " portable fixture");
+    await page
+      .getByRole("button", { name: "Save world project", exact: true })
+      .click();
+    const event = page.waitForEvent("download");
+    await page
+      .getByRole("button", { name: "Export world JSON", exact: true })
+      .click();
+    const file = (await (await event).path())!,
+      project = JSON.parse(await readFile(file, "utf8"));
+    expect(project.world).toBe(id);
+    expect(project.assumptions.length).toBeGreaterThan(2);
+    await page.locator("input[type=file]").setInputFiles(file);
+    await expect(page.locator(".applied-feedback")).toContainText(
+      "imported as a remix",
+    );
+    await page.reload();
+    await expect(
+      page.getByRole("region", { name: "Current world task" }),
+    ).toContainText("Build a reusable experiment");
+    await page.screenshot({
+      path: `test-results/applied-${id}-phone-${info.project.name}.png`,
+      fullPage: true,
+    });
+  });
+}
+test("six worlds stay under Applications; gallery filters and selected level survive a reload", async ({
+  page,
+}) => {
+  await page.goto("#/applications");
+  const gallery = page.getByRole("region", {
+    name: "Make a decision. See its mathematics.",
+    exact: true,
+  });
+  await expect(
+    gallery.getByRole("link", { name: "Start mission →", exact: true }),
+  ).toHaveCount(6);
+  await expect(
+    page.getByRole("navigation", { name: "Main navigation" }).getByRole("link"),
+  ).toHaveCount(5);
+  await page
+    .getByLabel("Applied world domain", { exact: true })
+    .selectOption("Sales");
+  await page
+    .getByLabel("World mission level", { exact: true })
+    .selectOption("3");
+  await expect(
+    gallery.getByRole("link", { name: "Start mission →", exact: true }),
+  ).toHaveCount(1);
+  await gallery
+    .getByRole("link", { name: "Start mission →", exact: true })
+    .click();
+  await expect(
+    page.getByLabel("Mission difficulty", { exact: true }),
+  ).toHaveValue("3");
+  await page
+    .getByRole("navigation", { name: "Applied learning stages" })
+    .getByRole("button", { name: "6. Build", exact: true })
+    .click();
+  await page.reload();
+  await expect(
+    page.getByRole("region", { name: "Current world task" }),
+  ).toContainText("Build a reusable experiment");
 });

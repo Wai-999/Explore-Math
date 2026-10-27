@@ -2,9 +2,9 @@
 
 Repository: `https://github.com/Wai-999/Explore-Math`.
 
-The owner explicitly authorized publication of `0.3.0-preview.1` on October 26, 2026: “Publish as preview; human reviews remain pending.” This changes the earlier hold for this preview publication; it does not record a completed mathematics, novice or accessibility review. The application labels the release as a preview and discloses pending reviews in My Learning. See [the release record](v2/RELEASE_AND_REMAINING_WORK.md) and [PR #2](https://github.com/Wai-999/Explore-Math/pull/2) for source/deployment evidence.
+The owner authorized preview publication with human reviews pending, then explicitly requested execution and deployment of the six-world prompt on October 26, 2026. The next preview is `0.4.0-preview.1`. This does not record completed mathematics, novice or accessibility review. The app retains its preview disclosure. See [the applied-world release record](applied-worlds/RELEASE_NOTES.md); prior V2 evidence remains in [PR #2](https://github.com/Wai-999/Explore-Math/pull/2).
 
-Preserve the Prediction Studio dependency: merge PR #1, retarget PR #2 to main, and merge the tested V2 head under repository policy. Main pushes run the existing Pages workflow. Never call a deployment successful until that workflow succeeds and actual live browser journeys pass.
+Push the tested feature branch, open a PR, wait for required checks, and merge through repository policy. Main pushes run the existing Pages workflow. Do not change repository settings or bypass protection. Claim deployment only after that workflow succeeds and actual public browser journeys pass; record the commit/run links in the PR handoff.
 
 The app is built statically with default Vite base `/Explore-Math/`. `VITE_BASE_PATH` overrides it, e.g. `VITE_BASE_PATH=/ npm run build` for a user-root site. Hash routes work without server rewrites. All fonts, lazy chunks, equations, CSS, and geometry are local build assets.
 

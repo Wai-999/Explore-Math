@@ -112,7 +112,7 @@ export default function WorldStage({
       const record = structuredClone(
         project?.record || applied.sessions[d.id] || fresh(d.id),
       );
-      if (initialLevel) {
+      if (initialLevel && initialLevel !== record.level) {
         record.level = initialLevel;
         record.stage = 0;
       }
@@ -140,7 +140,7 @@ export default function WorldStage({
     key = evidenceKey(d, r.seed, r.level),
     guided =
       r.guidance.includes(key) ||
-      r.guidance.length >= 1000 ||
+      r.guidance.length >= 100 ||
       (d.id === "ml" && r.guidance.includes("ml:holdout"));
   const frozen = d.id === "ml" && !!r.frozen;
   const numeric = useMemo(
@@ -219,7 +219,7 @@ export default function WorldStage({
     setFeedback("");
   }
   function guidance() {
-    if (!r.guidance.includes(key) && r.guidance.length < 1000)
+    if (!r.guidance.includes(key) && r.guidance.length < 100)
       patch({ guidance: [...r.guidance, key] });
   }
   function check() {
@@ -306,7 +306,13 @@ export default function WorldStage({
   const derivation = d.derive(p),
     activeProof = Math.min(proofIndex, derivation.length - 1);
   function report() {
-    return `# ${title}\n\nSynthetic teaching model · ${d.id} · version 1\n\n## Question\n${d.question}\n\n## Prediction\n${r.prediction}\n\n## Inputs\n${rules[d.id].map((q) => `${q.label}: ${p[q.key]} ${q.unit}`).join("\n")}\n\n## Calculations\n${m.metrics.map(([a, b]) => `${a}: ${b}`).join("\n")}\nGradient: ${m.gradient ? pair(m.gradient) : "undefined at boundary"}\n\n## Decision and next experiment\n${r.reflection}\n\n## Assumptions and limits\n${d.assumptions.join("\n")}\n${d.limit}\n\nObjective attempts: ${r.attempts.length}; current case ${guided ? "guided" : "no hint recorded"}. Explanations are not automatically graded.\n`;
+    return `# ${title}\n\nSynthetic teaching model · ${d.id} · version 1\n\n## Question\n${d.question}\n\n## Prediction\n${r.prediction}\n\n## Inputs\n${rules[d.id].map((q) => `${q.label}: ${p[q.key]} ${q.unit}`).join("\n")}\n\n## Calculations\n${m.metrics.map(([a, b]) => `${a}: ${b}`).join("\n")}\nGradient: ${m.gradient ? pair(m.gradient) : "undefined at boundary"}\n\n## Experiment plan\n${
+      r.plan
+        ? Object.entries(r.plan)
+            .map(([k, v]) => `${k}: ${v}`)
+            .join("\n")
+        : "Not recorded"
+    }\n\n## Decision and next experiment\n${r.reflection}\n\n## Assumptions and limits\n${d.assumptions.join("\n")}\n${d.limit}\n\nObjective attempts: ${r.attempts.length}; current case ${guided ? "guided" : "no hint recorded"}. Explanations are not automatically graded.\n`;
   }
   return (
     <div className="applied-world" data-world={d.id}>
@@ -608,7 +614,7 @@ export default function WorldStage({
               </div>
               <p>
                 {guided
-                  ? "Current case is guided, including any earlier reveal on an identical scenario."
+                  ? "Current case is guided: earlier help on the same scenario, an exposed holdout, or the bounded guidance ledger prevents new independent credit."
                   : "No hint revealed for this scenario."}
               </p>
               <p className="caption">
@@ -639,13 +645,21 @@ export default function WorldStage({
                 </button>
                 <button
                   className="secondary"
-                  onClick={() =>
-                    saveFile(
-                      d.id + "-project.json",
-                      JSON.stringify(project(), null, 2),
-                      "application/json",
-                    )
-                  }
+                  onClick={() => {
+                    const text = JSON.stringify(project(), null, 2);
+                    try {
+                      readProject(text);
+                      saveFile(
+                        d.id + "-project.json",
+                        text,
+                        "application/json",
+                      );
+                    } catch {
+                      setFeedback(
+                        "This project exceeds the portable-file bounds. Export its report and start a smaller remix; existing records remain saved.",
+                      );
+                    }
+                  }}
                 >
                   Export world JSON
                 </button>
@@ -676,7 +690,7 @@ export default function WorldStage({
                                 data.record.level,
                               ),
                             ]),
-                          ].slice(0, 1000),
+                          ].slice(0, 100),
                           stage: 5,
                         };
                         commitRecord(guidedRecord);
@@ -715,6 +729,49 @@ export default function WorldStage({
                   Export project report
                 </button>
               </div>
+              {d.id === "marketing" && (
+                <details>
+                  <summary>Experiment-planning worksheet</summary>
+                  <p>
+                    Synthetic planning only; do not enter personal customer
+                    data. Random assignment and an adequate observation window
+                    are necessary assumptions. A toy interval does not establish
+                    statistical power.
+                  </p>
+                  {(
+                    [
+                      ["assignment", "Assignment unit and randomization"],
+                      ["groups", "Treatment, control and observation window"],
+                      ["outcome", "Outcome definition and comparison"],
+                      [
+                        "uncertainty",
+                        "Sample-size caveats and uncertainty interpretation",
+                      ],
+                    ] as const
+                  ).map(([key, label]) => (
+                    <label key={key} className="applied-plan-field">
+                      {label}
+                      <textarea
+                        aria-label={label}
+                        maxLength={500}
+                        value={r.plan?.[key] || ""}
+                        onChange={(e) =>
+                          patch({
+                            plan: {
+                              assignment: "",
+                              groups: "",
+                              outcome: "",
+                              uncertainty: "",
+                              ...r.plan,
+                              [key]: e.target.value,
+                            },
+                          })
+                        }
+                      />
+                    </label>
+                  ))}
+                </details>
+              )}
               <details>
                 <summary>Show reproducible Python</summary>
                 <p>

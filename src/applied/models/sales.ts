@@ -150,7 +150,7 @@ export const definition: Definition = {
   title: "Sales Decision Simulator",
   question: "Which price earns the most after stock and staff costs?",
   analogy:
-    "A lower price may fill more baskets, but each basket earns less. Picture adjusting two knobs: the price on the shelf and the hours spent helping customers.",
+    "A lower price may fill more baskets, but each basket earns less. Picture adjusting two knobs: the price on the shelf and the hours spent helping customers. A related time-allocation example: two hours with leads converting at 0.3 expected sales/hour gives 0.6 expected sales, versus 0.2 at 0.1/hour. These are assumptions and expectations, not guaranteed outcomes; limited leads can change the best allocation.",
   output: "Profit ($/day)",
   assumptions: [
     "Synthetic daily steady-state model; no personal/customer data.",
@@ -299,7 +299,7 @@ export const definition: Definition = {
   python: (p) =>
     `# Synthetic sales assumptions; no causal or real-revenue claim.\np, s, k, h, mix, capacity = ${p.x}, ${p.y}, ${p.k}, ${p.h}, ${p.mix}, ${p.cap}\nraw = [100-3*p+4*s, 60-p+2*s]\nq = mix*max(0,raw[0])+(1-mix)*max(0,raw[1])\nsold = min(q,capacity)\nprofit = (p-k)*sold-h*s\nprint(profit)\n`,
   related: {
-    url: "#/applications/business",
-    label: "Compare the existing production/profit mission",
+    url: "#/explore/prediction/demand",
+    label: "Continue with the time-aware store-demand forecasting workflow",
   },
 };

@@ -43,7 +43,11 @@ export const cards = [
     description:
       "Find a price and effort plan. Inspect segment demand, margins, stock and a real computed profit surface.",
   },
-];
+].sort(
+  (a, b) =>
+    ["sales", "marketing", "ml", "robotics", "finance", "gis"].indexOf(a.id) -
+    ["sales", "marketing", "ml", "robotics", "finance", "gis"].indexOf(b.id),
+);
 export default function Gallery({ embedded = false }: { embedded?: boolean }) {
   const [domain, setDomain] = useState("All"),
     [level, setLevel] = useState("1");

@@ -279,3 +279,10 @@
     width: 100%;
   }
 }
+
+.applied-plan-field {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0;
+  font-size: 13px;
+}

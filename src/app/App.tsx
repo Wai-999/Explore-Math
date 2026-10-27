@@ -448,9 +448,31 @@ function MyLearning({
           checks do not establish educational effectiveness.
         </p>
       </section>
-      {(learning.applied?.projects.length || 0) > 0 && (
+      {((learning.applied?.projects.length || 0) > 0 ||
+        Object.keys(learning.applied?.sessions || {}).length > 0) && (
         <section className="learning-card">
-          <h2>Applied world projects</h2>
+          <h2>Applied world journeys and projects</h2>
+          <ul>
+            {Object.entries(learning.applied?.sessions || {}).map(
+              ([id, record]) => (
+                <li key={id}>
+                  <a href={`#/applications/worlds/${id}`}>
+                    Continue{" "}
+                    {id === "ml"
+                      ? "Machine Learning"
+                      : id.charAt(0).toUpperCase() + id.slice(1)}
+                  </a>{" "}
+                  · stage {record!.stage + 1}/6 · {record!.attempts.length}{" "}
+                  recorded objective attempts.{" "}
+                  {record!.attempts.at(-1)
+                    ? record!.attempts.at(-1)!.guided
+                      ? "Last attempt guided."
+                      : "No hint before the last attempt."
+                    : "No independent evidence recorded."}
+                </li>
+              ),
+            )}
+          </ul>
           <div className="applied-project-list">
             {learning.applied?.projects.map((p) => (
               <div key={p.id}>

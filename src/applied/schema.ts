@@ -18,7 +18,15 @@ export const rules: Record<WorldId, Rule[]> = {
     rule("mix", "Segment 1 weight", "share", 0, 1, 0.5, 0.05),
     rule("cap", "Stock capacity", "items/day", 10, 150, 120, 1),
     rule("budget", "Staff budget", "$/day", 5, 120, 40, 1),
-    rule("uncertainty", "Intercept sensitivity", "fraction", 0, 0.3, 0.2, 0.05),
+    rule(
+      "uncertainty",
+      "Segment-mix sensitivity",
+      "fraction",
+      0,
+      0.3,
+      0.2,
+      0.05,
+    ),
   ],
   marketing: [
     rule("x", "Channel A spend", "$/day", 0, 100, 40, 1),
@@ -31,6 +39,15 @@ export const rules: Record<WorldId, Rule[]> = {
     rule("margin", "Conversion margin", "$/conversion", 1, 20, 5),
     rule("baseline", "Baseline", "conversions/day", 0, 100, 20, 1),
     rule("minimum", "Minimum per channel", "$/day", 0, 20, 0, 1),
+    rule(
+      "uncertainty",
+      "Response-ceiling sensitivity",
+      "fraction",
+      0,
+      0.3,
+      0.2,
+      0.05,
+    ),
   ],
   ml: [
     rule("x", "Weight 1", "meals/feature unit", -2, 8, 0),
@@ -106,6 +123,12 @@ export interface RecordState {
   guidance: string[];
   attempts: Attempt[];
   visited: number[];
+  plan?: {
+    assignment: string;
+    groups: string;
+    outcome: string;
+    uncertainty: string;
+  };
   frozen?: { params: Params; seed: number; loss: number };
 }
 export interface WorldProject {
@@ -151,6 +174,7 @@ export function validRecord(id: WorldId, v: unknown): v is RecordState {
           "attempts",
           "visited",
           "frozen",
+          "plan",
         ].includes(k),
     ) ||
     v.version !== 1 ||
@@ -162,13 +186,22 @@ export function validRecord(id: WorldId, v: unknown): v is RecordState {
     !str(v.prediction) ||
     !str(v.reflection) ||
     !Array.isArray(v.guidance) ||
-    v.guidance.length > 1000 ||
-    !Array.from(v.guidance).every((k) => str(k, 1500)) ||
+    v.guidance.length > 100 ||
+    !Array.from(v.guidance).every((k) => str(k, 500)) ||
     !Array.isArray(v.visited) ||
     v.visited.length > 6 ||
     !Array.from(v.visited).every((k) => integer(k, 0, 5)) ||
     !Array.isArray(v.attempts) ||
     v.attempts.length > 100
+  )
+    return false;
+  if (
+    v.plan !== undefined &&
+    (!obj(v.plan) ||
+      id !== "marketing" ||
+      Object.keys(v.plan).sort().join() !==
+        "assignment,groups,outcome,uncertainty" ||
+      !Object.values(v.plan).every((s) => str(s, 500)))
   )
     return false;
   if (
