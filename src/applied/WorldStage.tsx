@@ -420,14 +420,20 @@ export default function WorldStage({
             <>
               <h2>Change one thing.</h2>
               <p>
-                Move the marker or edit its two coordinates. Read the equation,
-                table and interpretation together. Drag empty 3D space to orbit;
-                camera motion does not change your decision.
+                {d.id === "robotics"
+                  ? "Change one joint angle using the numeric controls. Watch the links, tip position and Jacobian change together."
+                  : d.id === "ml" && p.view === 1
+                    ? "Change one model weight using the numeric controls. Watch the prediction plane and residuals change; the observed feature coordinates stay fixed."
+                    : "Move the marker or edit its two coordinates. Read the equation, table and interpretation together."}{" "}
+                Drag empty 3D space to orbit; camera motion does not change your
+                decision.
               </p>
               <p>
-                Orange shows the analytic gradient direction where defined; its
-                visible length is scaled. Dashed lines mark constraints. Gray
-                surface cells are outside the feasible region.
+                {d.id === "robotics"
+                  ? "The links and joint frames lie in the xy plane. Compare the target, circular obstacle, computed joint path and instantaneous velocity arrow. This is kinematics, not a force simulation."
+                  : d.id === "ml" && p.view === 1
+                    ? "Dots mark training observations; vertical residual segments compare predictions with targets. This feature-space plane is different from the loss surface over weights."
+                    : "Orange shows the analytic gradient direction where defined; its visible length is scaled. Dashed lines mark constraints. Gray surface cells are outside the feasible region."}
               </p>
               {d.step && (
                 <button
