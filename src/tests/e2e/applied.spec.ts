@@ -191,3 +191,65 @@ test("Marketing connects budget allocation, derivation, independent case and sav
     page.getByRole("region", { name: "Current world task" }),
   ).toContainText("Build a reusable experiment");
 });
+test("ML loss world freezes a model before exposing its separate holdout", async ({
+  page,
+}) => {
+  await page.goto("#/applications/worlds/ml");
+  await expect(page.locator("h1")).toContainText("Train the Predictor");
+  const nav = page.getByRole("navigation", { name: "Applied learning stages" });
+  await nav.getByRole("button", { name: "3. Experiment", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Take one model step", exact: true })
+    .click();
+  await expect(
+    page.getByRole("spinbutton", {
+      name: "Weight 1 (meals/feature unit)",
+      exact: true,
+    }),
+  ).toHaveValue("1.05");
+  await nav.getByRole("button", { name: "5. Mission", exact: true }).click();
+  await page
+    .getByRole("spinbutton", {
+      name: "Weight 1 (meals/feature unit)",
+      exact: true,
+    })
+    .fill("2");
+  await page
+    .getByRole("spinbutton", {
+      name: "Weight 2 (meals/feature unit)",
+      exact: true,
+    })
+    .fill("3");
+  await page
+    .getByRole("radio", {
+      name: "Use the negative training gradient with a suitable step; evaluate a frozen model separately",
+      exact: true,
+    })
+    .check();
+  await page
+    .getByRole("button", { name: "Check mission", exact: true })
+    .click();
+  await expect(page.locator(".applied-feedback")).toContainText(
+    "Numerical objective met",
+  );
+  await page
+    .getByRole("button", {
+      name: "Freeze coefficients and evaluate held-out data",
+      exact: true,
+    })
+    .click();
+  await expect(page.locator(".applied-feedback")).toContainText("0.056667");
+  await expect(
+    page.getByRole("spinbutton", {
+      name: "Weight 1 (meals/feature unit)",
+      exact: true,
+    }),
+  ).toBeDisabled();
+  await page.reload();
+  await expect(
+    page.getByRole("spinbutton", {
+      name: "Weight 1 (meals/feature unit)",
+      exact: true,
+    }),
+  ).toBeDisabled();
+});

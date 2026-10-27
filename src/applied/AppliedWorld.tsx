@@ -1,43 +1,20 @@
 import { lazy, Suspense } from "react";
+import type { Definition } from "./types";
 import Gallery from "./Gallery";
-const Sales = lazy(() =>
-  Promise.all([import("./WorldStage"), import("./models/sales")]).then(
-    ([c, m]) => ({
-      default: ({
-        projectId,
-        initialLevel,
-      }: {
-        projectId?: string;
-        initialLevel?: number;
-      }) => (
-        <c.default
-          definition={m.definition}
-          projectId={projectId}
-          initialLevel={initialLevel}
-        />
+type Props = { projectId?: string; initialLevel?: number };
+const view = (loader: () => Promise<{ definition: Definition }>) =>
+  lazy(() =>
+    Promise.all([import("./WorldStage"), loader()]).then(([c, m]) => ({
+      default: (props: Props) => (
+        <c.default definition={m.definition} {...props} />
       ),
-    }),
-  ),
-);
-const Marketing = lazy(() =>
-  Promise.all([import("./WorldStage"), import("./models/marketing")]).then(
-    ([c, m]) => ({
-      default: ({
-        projectId,
-        initialLevel,
-      }: {
-        projectId?: string;
-        initialLevel?: number;
-      }) => (
-        <c.default
-          definition={m.definition}
-          projectId={projectId}
-          initialLevel={initialLevel}
-        />
-      ),
-    }),
-  ),
-);
+    })),
+  );
+const views: Record<string, ReturnType<typeof view>> = {
+  sales: view(() => import("./models/sales")),
+  marketing: view(() => import("./models/marketing")),
+  ml: view(() => import("./models/ml")),
+};
 export default function AppliedWorld({
   id,
   projectId,
@@ -45,17 +22,13 @@ export default function AppliedWorld({
   id?: string;
   projectId?: string;
 }) {
-  const [world, query] = (id || "").split("?");
-  const n = Number(new URLSearchParams(query).get("level"));
+  const [world, query] = (id || "").split("?"),
+    n = Number(new URLSearchParams(query).get("level")),
+    View = views[world];
   return (
     <Suspense fallback={<p>Opening the computed world…</p>}>
-      {world === "sales" ? (
-        <Sales
-          projectId={projectId}
-          initialLevel={[1, 2, 3].includes(n) ? n : undefined}
-        />
-      ) : world === "marketing" ? (
-        <Marketing
+      {View ? (
+        <View
           projectId={projectId}
           initialLevel={[1, 2, 3].includes(n) ? n : undefined}
         />

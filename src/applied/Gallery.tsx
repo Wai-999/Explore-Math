@@ -2,6 +2,13 @@ import { useState } from "react";
 import "./applied.css";
 export const cards = [
   {
+    id: "ml",
+    title: "Train the Predictor",
+    domain: "Machine Learning",
+    description:
+      "Connect Xw, squared loss, gradients and a frozen holdout. Switch between parameter space and training-feature space.",
+  },
+  {
     id: "marketing",
     title: "Marketing Mix Sandbox",
     domain: "Marketing",

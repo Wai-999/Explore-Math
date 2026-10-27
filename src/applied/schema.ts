@@ -35,6 +35,7 @@ export const rules: Record<WorldId, Rule[]> = {
     rule("x", "Weight 1", "meals/feature unit", -2, 8, 0),
     rule("y", "Weight 2", "meals/feature unit", -2, 8, 0),
     rule("alpha", "Learning rate", "scaled step", 0.01, 1, 0.1, 0.01),
+    rule("view", "Feature-space view", "0 loss / 1 data", 0, 1, 0, 1),
   ],
   robotics: [
     rule("x", "Joint 1 angle", "degrees", -150, 150, 20, 1),
@@ -76,7 +77,7 @@ export function validParams(id: WorldId, p: unknown): p is Params {
         Number.isFinite(p[r.key]) &&
         Number(p[r.key]) >= r.min &&
         Number(p[r.key]) <= r.max &&
-        (r.key !== "route" || Number.isInteger(p[r.key])),
+        (!["route", "view"].includes(r.key) || Number.isInteger(p[r.key])),
     )
   );
 }

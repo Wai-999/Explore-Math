@@ -207,6 +207,12 @@ export default function WorldStage({
       patch({ guidance: [...r.guidance, key] });
   }
   function check() {
+    if (d.id === "ml" && r.level === 3 && !r.frozen) {
+      setFeedback(
+        "Freeze the coefficients and evaluate the held-out set before checking this level.",
+      );
+      return;
+    }
     const result = gradeMission(d, p, r.seed, r.level, rule);
     patch({
       attempts: [
@@ -760,8 +766,8 @@ export default function WorldStage({
             }}
           />
           <p className="caption">
-            x: {rules[d.id][0].label} ({rules[d.id][0].unit}); y:{" "}
-            {rules[d.id][1].label} ({rules[d.id][1].unit}); z: {d.output}.{" "}
+            x: {geometry.labels[0]}; y: {geometry.labels[1]}; z:{" "}
+            {geometry.labels[2]}.{" "}
             {geometry.draggable
               ? "Drag the decision sphere or use numeric inputs."
               : "Change joint angles with numeric inputs; the arm is planar inside a 3D frame."}{" "}
