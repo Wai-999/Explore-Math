@@ -142,3 +142,52 @@ test("Sales 3D changes and context-loss/mobile fallback retain the same decision
   await expect(page.locator("body")).toHaveJSProperty("scrollWidth", 375);
   await expect(page.locator(".applied-fallback")).toBeVisible();
 });
+test("Marketing connects budget allocation, derivation, independent case and saved project", async ({
+  page,
+}) => {
+  await page.goto("#/applications/worlds/marketing");
+  await expect(page.locator("h1")).toContainText("Marketing Mix Sandbox");
+  const nav = page.getByRole("navigation", { name: "Applied learning stages" });
+  await nav
+    .getByRole("button", { name: "4. Understand & Prove", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Load worked example 1", exact: true })
+    .click();
+  await expect(page.locator(".applied-metrics")).toContainText("0 $/day");
+  await page
+    .getByRole("button", { name: "Load worked example 2", exact: true })
+    .click();
+  await expect(page.locator(".applied-metrics")).toContainText("28.877 $/day");
+  await expect(page.locator(".applied-experiment")).toContainText(
+    "Attribution is not incremental lift",
+  );
+  await nav.getByRole("button", { name: "5. Mission", exact: true }).click();
+  const x = (Math.log((31 * 0.03) / (21 * 0.02)) + 0.02 * 97) / 0.05;
+  await page
+    .getByRole("spinbutton", { name: "Channel A spend ($/day)", exact: true })
+    .fill(String(x));
+  await page
+    .getByRole("spinbutton", { name: "Channel B spend ($/day)", exact: true })
+    .fill(String(97 - x));
+  await page
+    .getByRole("radio", {
+      name: "Respect marginal value and constraints; use valid randomized comparisons for incrementality",
+      exact: true,
+    })
+    .check();
+  await page
+    .getByRole("button", { name: "Check mission", exact: true })
+    .click();
+  await expect(page.locator(".applied-feedback")).toContainText(
+    "Objective met",
+  );
+  await nav.getByRole("button", { name: "6. Build", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Save world project", exact: true })
+    .click();
+  await page.reload();
+  await expect(
+    page.getByRole("region", { name: "Current world task" }),
+  ).toContainText("Build a reusable experiment");
+});

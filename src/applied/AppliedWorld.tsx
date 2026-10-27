@@ -19,6 +19,25 @@ const Sales = lazy(() =>
     }),
   ),
 );
+const Marketing = lazy(() =>
+  Promise.all([import("./WorldStage"), import("./models/marketing")]).then(
+    ([c, m]) => ({
+      default: ({
+        projectId,
+        initialLevel,
+      }: {
+        projectId?: string;
+        initialLevel?: number;
+      }) => (
+        <c.default
+          definition={m.definition}
+          projectId={projectId}
+          initialLevel={initialLevel}
+        />
+      ),
+    }),
+  ),
+);
 export default function AppliedWorld({
   id,
   projectId,
@@ -32,6 +51,11 @@ export default function AppliedWorld({
     <Suspense fallback={<p>Opening the computed world…</p>}>
       {world === "sales" ? (
         <Sales
+          projectId={projectId}
+          initialLevel={[1, 2, 3].includes(n) ? n : undefined}
+        />
+      ) : world === "marketing" ? (
+        <Marketing
           projectId={projectId}
           initialLevel={[1, 2, 3].includes(n) ? n : undefined}
         />

@@ -2,6 +2,13 @@ import { useState } from "react";
 import "./applied.css";
 export const cards = [
   {
+    id: "marketing",
+    title: "Marketing Mix Sandbox",
+    domain: "Marketing",
+    description:
+      "Allocate two channels under a budget. Separate diminishing response, net value, attribution and randomized lift.",
+  },
+  {
     id: "sales",
     title: "Sales Decision Simulator",
     domain: "Sales",

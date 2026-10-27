@@ -447,7 +447,7 @@ export default function WorldStage({
                     className="secondary"
                     key={ex.title}
                     onClick={() => {
-                      change({ ...p, ...ex.params });
+                      change({ ...fresh(d.id).params, ...ex.params });
                       setExample(i);
                     }}
                   >
@@ -493,7 +493,7 @@ export default function WorldStage({
               <button
                 className="secondary"
                 onClick={() => {
-                  change({ ...p, ...d.edge.params });
+                  change({ ...fresh(d.id).params, ...d.edge.params });
                   setFeedback(d.edge.explanation);
                 }}
               >
